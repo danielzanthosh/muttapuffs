@@ -1,0 +1,71 @@
+@import "leaflet/dist/leaflet.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bakery-cream: #FAF7F2;
+  --bakery-paper: #F5F0E6;
+  --egg-yellow: #FFD700;
+  --chocolate-brown: #3E2723;
+  --warm-orange: #FF9800;
+  --tomato-red: #F44336;
+  --font-inter: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-comic: "Arial Black", Impact, var(--font-inter);
+  --font-hand: "Comic Sans MS", "Trebuchet MS", var(--font-inter);
+}
+
+@layer base {
+  body {
+    @apply bg-bakery-cream text-chocolate-brown font-sans selection:bg-egg-yellow selection:text-chocolate-brown;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cfilter id='noise' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-comic tracking-tight;
+  }
+}
+
+@layer components {
+  .brutalist-card {
+    @apply bg-white border-3 border-chocolate-brown rounded-brutalist shadow-brutalist-md transition-all duration-200 hover:shadow-brutalist-hover hover:-translate-y-0.5;
+  }
+
+  .comic-badge {
+    @apply px-3 py-1 border-2 border-chocolate-brown font-comic text-sm uppercase font-bold rounded-full shadow-brutalist-sm rotate-[-2deg] inline-block;
+  }
+
+  .btn-primary {
+    @apply bg-egg-yellow border-3 border-chocolate-brown px-6 py-3 rounded-brutalist font-comic font-bold shadow-brutalist-md transition-all hover:shadow-brutalist-sm hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-1 active:translate-y-1;
+  }
+
+  .btn-secondary {
+    @apply bg-white border-3 border-chocolate-brown px-6 py-3 rounded-brutalist font-comic font-bold shadow-brutalist-md transition-all hover:shadow-brutalist-sm hover:translate-x-0.5 hover:translate-y-0.5;
+  }
+
+  .speech-bubble {
+    @apply relative bg-white border-3 border-chocolate-brown p-4 rounded-2xl shadow-brutalist-md;
+  }
+
+  .speech-bubble::after {
+    content: '';
+    @apply absolute bottom-[-15px] left-6 w-0 h-0 border-l-[15px] border-l-transparent border-r-[15px] border-r-transparent border-t-[15px] border-t-chocolate-brown;
+  }
+}
+
+.paper-texture {
+  position: relative;
+}
+
+.paper-texture::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.05;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
