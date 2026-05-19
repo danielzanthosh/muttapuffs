@@ -8,7 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 import { CloudinaryUploadResult } from "@/lib/cloudinary";
 import { reviewSchema } from "@/lib/validation";
 
-export function ReviewForm({ bakeryId, bakerySlug }: { bakeryId: string; bakerySlug: string }) {
+export function ReviewForm({ bakeryId }: { bakeryId: string; bakerySlug: string }) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [photoResult, setPhotoResult] = useState<CloudinaryUploadResult | null>(null);
@@ -59,7 +59,7 @@ export function ReviewForm({ bakeryId, bakerySlug }: { bakeryId: string; bakeryS
           return;
         }
 
-        router.push(`/bakeries/${bakerySlug}`);
+        router.push("/bakeries");
         router.refresh();
         return;
       }
@@ -114,7 +114,7 @@ export function ReviewForm({ bakeryId, bakerySlug }: { bakeryId: string; bakeryS
         }
       }
 
-      router.push(`/bakeries/${bakerySlug}`);
+      router.push("/bakeries");
       router.refresh();
     });
   }

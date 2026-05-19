@@ -1,8 +1,7 @@
 import { ReviewWithProfile } from "@/types/bakery";
-import { RatingPill, ScamLevelBadge } from "./ui-primitives";
+import { ScamLevelBadge } from "./ui-primitives";
 import { formatReviewDate, formatPrice, getPuffBadge, getScamAlerts } from "@/lib/puff-utils";
 import { User, Calendar, Receipt, MessageCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 export function ReviewCard({ review }: { review: ReviewWithProfile }) {
   const badge = getPuffBadge({
@@ -65,7 +64,7 @@ export function ReviewCard({ review }: { review: ReviewWithProfile }) {
       <div className="p-4 bg-bakery-paper border-2 border-chocolate-brown rounded-lg mb-6 relative">
         <MessageCircle size={16} className="absolute -top-2 -left-2 text-chocolate-brown fill-white" />
         <p className="text-sm font-medium leading-relaxed italic">
-          "{review.review_text}"
+          &quot;{review.review_text}&quot;
         </p>
       </div>
 
@@ -73,6 +72,7 @@ export function ReviewCard({ review }: { review: ReviewWithProfile }) {
         <div className="mb-6 grid grid-cols-1 gap-4">
           {review.review_photos.map((photo) => (
             <div key={photo.id} className="brutalist-card p-1 bg-white overflow-hidden aspect-video relative group/photo">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img 
                 src={photo.cloudinary_url} 
                 alt="Puff Proof" 

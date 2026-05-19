@@ -137,8 +137,8 @@ export function BakeryMap({ markers }: { markers: BakeryMapMarker[] }) {
                   <span>Puff {marker.stats.avgOverall.toFixed(1)}</span>
                   <span>Scam {marker.stats.avgScam.toFixed(1)}</span>
                 </div>
-                <Link href={`/bakeries/${marker.slug}`} className="text-xs font-black underline">
-                  Open case file
+                <Link href="/bakeries" className="text-xs font-black underline">
+                  View case files
                 </Link>
               </div>
             </Popup>

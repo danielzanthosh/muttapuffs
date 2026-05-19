@@ -1,15 +1,16 @@
 "use client";
 
-import Link from "next/link";
 import { BakeryWithStats } from "@/types/bakery";
 import { BadgeChip, RatingPill, ScamLevelBadge } from "./ui-primitives";
 import { MapPin, MessageCircle } from "lucide-react";
 
-export function BakeryCard({ bakery }: { bakery: BakeryWithStats }) {
+export function BakeryCard({ bakery, onSelect }: { bakery: BakeryWithStats; onSelect: () => void }) {
   return (
-    <Link 
-      href={`/bakeries/${bakery.slug}`}
-      className="group flex h-full flex-col border-4 border-chocolate-brown bg-white p-6 shadow-brutalist-md transition-transform hover:-translate-y-1 hover:rotate-[-0.5deg] focus:outline-none focus:ring-4 focus:ring-warm-orange"
+    <button
+      type="button"
+      onClick={onSelect}
+      aria-haspopup="dialog"
+      className="group flex h-full w-full flex-col border-4 border-chocolate-brown bg-white p-6 text-left shadow-brutalist-md transition-transform hover:-translate-y-1 hover:rotate-[-0.5deg] focus:outline-none focus:ring-4 focus:ring-warm-orange"
     >
       <div className="flex justify-between items-start mb-4">
         <div>
@@ -45,6 +46,6 @@ export function BakeryCard({ bakery }: { bakery: BakeryWithStats }) {
         
         <RatingPill value={bakery.stats.avgEgg} label="MUTTA" />
       </div>
-    </Link>
+    </button>
   );
 }

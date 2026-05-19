@@ -1,6 +1,3 @@
-"use client";
-
-import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface RatingSliderProps {
@@ -8,11 +5,10 @@ interface RatingSliderProps {
   name: string;
   value: number;
   onChange: (value: number) => void;
-  color?: string;
   description?: string;
 }
 
-export function RatingSlider({ label, name, value, onChange, color = "bg-egg-yellow", description }: RatingSliderProps) {
+export function RatingSlider({ label, name, value, onChange, description }: RatingSliderProps) {
   return (
     <div className="space-y-3">
       <div className="flex justify-between items-end">
@@ -28,6 +24,8 @@ export function RatingSlider({ label, name, value, onChange, color = "bg-egg-yel
         type="range"
         min="0"
         max="10"
+        name={name}
+        aria-label={label}
         step="1"
         value={value}
         onChange={(e) => onChange(parseInt(e.target.value))}

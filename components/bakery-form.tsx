@@ -47,7 +47,7 @@ export function BakeryForm() {
           return;
         }
 
-        router.push(`/bakeries/${result.bakery.slug}`);
+        router.push("/bakeries");
         router.refresh();
         return;
       }
@@ -58,7 +58,7 @@ export function BakeryForm() {
         return;
       }
 
-      const { data, error: insertError } = await supabase!
+      const { error: insertError } = await supabase!
         .from("bakeries")
         .insert({
           name,
@@ -71,9 +71,7 @@ export function BakeryForm() {
           latitude,
           longitude,
           created_by: user.id
-        })
-        .select()
-        .single();
+        });
 
       if (insertError) {
         if (insertError.code === "23505") {
@@ -84,7 +82,7 @@ export function BakeryForm() {
         return;
       }
 
-      router.push(`/bakeries/${data.slug}`);
+      router.push("/bakeries");
       router.refresh();
     });
   }

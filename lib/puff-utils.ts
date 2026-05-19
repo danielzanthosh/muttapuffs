@@ -1,5 +1,3 @@
-import { BadgeType } from "@/types/bakery";
-
 export function calculateOverallRating(ratings: {
   egg: number;
   taste: number;

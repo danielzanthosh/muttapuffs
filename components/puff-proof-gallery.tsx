@@ -34,6 +34,7 @@ export function PuffProofGallery({ photos }: { photos: ReviewPhoto[] }) {
           key={photo.id} 
           className="gallery-item brutalist-card p-1 bg-white overflow-hidden aspect-square relative group cursor-zoom-in"
         >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img 
             src={photo.cloudinary_url} 
             alt="Puff Proof" 

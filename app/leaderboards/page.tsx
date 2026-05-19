@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { getFilteredBakeries } from "@/lib/supabase/queries";
@@ -65,10 +64,7 @@ function Leaderboard({
             const value = bakery.stats[metric];
             return (
               <li key={bakery.id}>
-                <Link
-                  href={`/bakeries/${bakery.slug}`}
-                  className="grid grid-cols-[40px_1fr_auto] items-center gap-3 border-3 border-chocolate-brown bg-bakery-cream p-3 font-bold transition-transform hover:-translate-y-0.5 hover:bg-egg-yellow"
-                >
+                <div className="grid grid-cols-[40px_1fr_auto] items-center gap-3 border-3 border-chocolate-brown bg-bakery-cream p-3 font-bold">
                   <span className="text-2xl font-black tabular-nums">{index + 1}</span>
                   <span>
                     <span className="block leading-tight">{bakery.name}</span>
@@ -77,7 +73,7 @@ function Leaderboard({
                   <span className="border-2 border-chocolate-brown bg-white px-2 py-1 text-sm font-black tabular-nums">
                     {metric === "reviewCount" ? value : inverse ? value.toFixed(1) : value.toFixed(1)}
                   </span>
-                </Link>
+                </div>
               </li>
             );
           })}

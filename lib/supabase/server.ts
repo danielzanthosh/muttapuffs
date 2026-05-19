@@ -17,7 +17,7 @@ export const createClient = async () => {
             cookiesToSet.forEach(({ name, value, options }) => {
               cookieStore.set(name, value, options)
             })
-          } catch (error) {
+          } catch {
             // Server Components cannot always set cookies directly.
             // Middleware/proxy refreshes sessions when mutation is needed.
           }

@@ -27,7 +27,10 @@ export function RatingPill({ value, label, max = 10 }: { value: number; label?: 
   return (
     <div className="flex items-center gap-2">
       {label && <span className="text-[10px] font-black uppercase opacity-60 font-comic">{label}</span>}
-      <div className="bg-white border-2 border-chocolate-brown px-2 py-0.5 rounded-full font-black text-xs shadow-brutalist-sm min-w-[32px] text-center">
+      <div
+        aria-label={`${label || "Rating"} ${value.toFixed(1)} out of ${max}`}
+        className="bg-white border-2 border-chocolate-brown px-2 py-0.5 rounded-full font-black text-xs shadow-brutalist-sm min-w-[32px] text-center"
+      >
         {value.toFixed(1)}
       </div>
     </div>
