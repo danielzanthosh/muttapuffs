@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Link from "next/link";
 import gsap from "gsap";
 import { BakeryWithStats } from "@/types/bakery";
 import { BakeryCard } from "./bakery-card";
@@ -28,6 +29,9 @@ export function BakeryList({ bakeries }: { bakeries: BakeryWithStats[] }) {
           <div className="mx-auto mb-6 h-16 w-16 rotate-[-4deg] border-4 border-dashed border-chocolate-brown bg-egg-yellow shadow-brutalist-md" />
           <h3 className="text-3xl font-black mb-2">Zero Mutta Detected.</h3>
           <p className="font-bold opacity-60">Try adjusting your filters or register a new bakery.</p>
+          <Link href="/bakeries/new" className="btn-primary mt-6 inline-block">
+            Register Bakery
+          </Link>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">

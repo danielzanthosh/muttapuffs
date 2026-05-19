@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { BakeryMapMarker } from "@/types/bakery";
 import type { DivIcon } from "leaflet";
 import type * as ReactLeaflet from "react-leaflet";
+import { SkeletonBlock, SkeletonLine } from "@/components/skeletons";
 
 const defaultCenter: [number, number] = [10.8505, 76.2711];
 
@@ -81,14 +82,32 @@ export function BakeryMap({ markers }: { markers: BakeryMapMarker[] }) {
         <p className="mx-auto max-w-xl font-bold opacity-70">
           Add latitude and longitude to bakery case files to activate the live radar.
         </p>
+        <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+          <Link href="/bakeries/new" className="btn-primary">
+            Register Bakery
+          </Link>
+          <Link href="/bakeries" className="btn-secondary">
+            View Case Files
+          </Link>
+        </div>
       </div>
     );
   }
 
   if (!runtime) {
     return (
-      <div className="border-4 border-chocolate-brown bg-white p-12 text-center shadow-brutalist-md">
-        <p className="font-comic text-2xl font-black">Loading Bakery Radar...</p>
+      <div className="overflow-hidden rounded-brutalist border-4 border-chocolate-brown bg-white p-2 shadow-brutalist-lg" aria-busy="true">
+        <div className="relative h-[70dvh] min-h-[460px] overflow-hidden rounded-[8px] border-2 border-chocolate-brown/30 bg-bakery-cream">
+          <div className="absolute inset-0 opacity-45 [background-image:linear-gradient(var(--chocolate-brown)_1px,transparent_1px),linear-gradient(90deg,var(--chocolate-brown)_1px,transparent_1px)] [background-size:72px_72px]" />
+          <SkeletonBlock className="absolute left-[18%] top-[22%] h-10 w-16 rotate-[-5deg] bg-egg-yellow" />
+          <SkeletonBlock className="absolute right-[20%] top-[34%] h-10 w-16 rotate-3 bg-warm-orange" />
+          <SkeletonBlock className="absolute bottom-[22%] left-[44%] h-10 w-16 rotate-[-2deg] bg-tomato-red" />
+          <div className="absolute bottom-4 left-4 right-4 rounded-brutalist border-3 border-chocolate-brown bg-white p-4 shadow-brutalist-sm md:left-auto md:w-72">
+            <SkeletonLine className="mb-3 h-5 w-44 bg-chocolate-brown/15" />
+            <SkeletonLine className="mb-2 w-full" />
+            <SkeletonLine className="w-2/3" />
+          </div>
+        </div>
       </div>
     );
   }
