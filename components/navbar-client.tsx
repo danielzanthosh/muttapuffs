@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 export function NavbarClient({ isAdmin, isSignedIn }: { isAdmin: boolean; isSignedIn: boolean }) {
   return (
-    <nav className="w-full px-3 py-3 md:px-4 md:py-4">
+    <nav className="pointer-events-none sticky top-0 z-50 w-full bg-transparent px-3 py-3 md:px-4 md:py-4">
       <div className="mx-auto flex max-w-7xl flex-col gap-3 pointer-events-auto md:flex-row md:items-center md:justify-between">
         <div className="flex items-center justify-between">
           <Link
