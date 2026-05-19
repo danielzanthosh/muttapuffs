@@ -25,5 +25,6 @@ export function buildOAuthProfileDraft({ id, email, metadata }: OAuthProfileInpu
     username: `${username || "puff_detective"}_${id.slice(0, 8)}`,
     full_name: typeof metadata.full_name === "string" ? metadata.full_name : metadata.name || null,
     avatar_url: typeof metadata.avatar_url === "string" ? metadata.avatar_url : null,
+    is_admin: false,
   };
 }

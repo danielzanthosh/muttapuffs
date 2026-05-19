@@ -2,10 +2,11 @@ import { NextResponse } from "next/server";
 import {
   buildCloudinarySignaturePayload,
   getCloudinaryServerConfig,
+  parseCloudinaryUploadKind,
 } from "@/lib/cloudinary-signature";
 import { createClient } from "@/lib/supabase/server";
 
-export async function POST() {
+export async function POST(request: Request) {
   const config = getCloudinaryServerConfig();
 
   if (!config.ok) {
@@ -27,5 +28,8 @@ export async function POST() {
     }
   }
 
-  return NextResponse.json(buildCloudinarySignaturePayload(config.config));
+  const body = await request.json().catch(() => ({}));
+  return NextResponse.json(
+    buildCloudinarySignaturePayload(config.config, Math.round(Date.now() / 1000), parseCloudinaryUploadKind(body.kind))
+  );
 }

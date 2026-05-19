@@ -17,6 +17,7 @@ describe("buildOAuthProfileDraft", () => {
       username: "daniel_z_12345678",
       full_name: "Daniel Z!",
       avatar_url: "https://example.com/avatar.png",
+      is_admin: false,
     });
   });
 

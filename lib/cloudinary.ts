@@ -100,10 +100,13 @@ export async function compressImageClient(file: File): Promise<Blob> {
  */
 export async function uploadToCloudinary(
   file: File | Blob, 
-  onProgress?: (progress: number) => void
+  onProgress?: (progress: number) => void,
+  kind: "proof" | "avatar" = "proof"
 ): Promise<CloudinaryUploadResult> {
   const signatureResponse = await fetch("/api/cloudinary/signature", {
     method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ kind }),
   });
 
   if (!signatureResponse.ok) {

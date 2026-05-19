@@ -24,6 +24,21 @@ describe("buildCloudinarySignaturePayload", () => {
     });
     expect(payload).not.toHaveProperty("uploadPreset");
   });
+
+  it("can sign avatar uploads into the avatar folder", () => {
+    const payload = buildCloudinarySignaturePayload(
+      {
+        cloudName: "demo-cloud",
+        apiKey: "demo-key",
+        apiSecret: "demo-secret",
+      },
+      1_716_000_000,
+      "avatar"
+    );
+
+    expect(payload.folder).toBe("muttameter/avatars");
+    expect(payload.signature).toBe("3999eb8faa02382fb715fb2423435c78a9188873");
+  });
 });
 
 describe("getCloudinaryServerConfig", () => {

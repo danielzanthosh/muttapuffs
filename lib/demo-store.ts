@@ -53,6 +53,7 @@ function makeReview(input: {
       username: input.user,
       full_name: null,
       avatar_url: null,
+      is_admin: false,
       created_at: now,
     },
     review_photos: [],

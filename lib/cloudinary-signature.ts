@@ -1,6 +1,11 @@
 import { createHash } from "crypto";
 
-const CLOUDINARY_PROOF_FOLDER = "muttameter/proof";
+const CLOUDINARY_FOLDERS = {
+  avatar: "muttameter/avatars",
+  proof: "muttameter/proof",
+} as const;
+
+export type CloudinaryUploadKind = keyof typeof CLOUDINARY_FOLDERS;
 
 export interface CloudinaryServerConfig {
   cloudName: string;
@@ -44,16 +49,22 @@ export function getCloudinaryServerConfig(
 
 export function buildCloudinarySignaturePayload(
   config: CloudinaryServerConfig,
-  timestamp = Math.round(Date.now() / 1000)
+  timestamp = Math.round(Date.now() / 1000),
+  kind: CloudinaryUploadKind = "proof"
 ): CloudinarySignaturePayload {
-  const paramsToSign = `folder=${CLOUDINARY_PROOF_FOLDER}&timestamp=${timestamp}${config.apiSecret}`;
+  const folder = CLOUDINARY_FOLDERS[kind];
+  const paramsToSign = `folder=${folder}&timestamp=${timestamp}${config.apiSecret}`;
   const signature = createHash("sha1").update(paramsToSign).digest("hex");
 
   return {
     cloudName: config.cloudName,
     apiKey: config.apiKey,
-    folder: CLOUDINARY_PROOF_FOLDER,
+    folder,
     timestamp,
     signature,
   };
+}
+
+export function parseCloudinaryUploadKind(value: unknown): CloudinaryUploadKind {
+  return value === "avatar" ? "avatar" : "proof";
 }
