@@ -1,6 +1,7 @@
 import { createClient } from "./server"
 import { Database } from "@/types/database"
 import { BakeryMapMarker, BakeryStats, BakeryWithStats } from "@/types/bakery"
+import { getDemoState } from "@/lib/demo-store"
 
 type BakeryInsert = Database["public"]["Tables"]["bakeries"]["Insert"]
 
@@ -10,6 +11,10 @@ export type BakeryFilters = {
   district?: string;
   sort?: string;
 }
+
+export const hasSupabaseEnv = () => {
+  return Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+};
 
 function buildStats(reviews: Array<{
   overall_rating: number | null;
@@ -45,6 +50,11 @@ function buildStats(reviews: Array<{
 }
 
 export async function getBakeries() {
+  if (!hasSupabaseEnv()) {
+    const { bakeries } = getDemoState();
+    return bakeries;
+  }
+
   const supabase = await createClient()
   const { data, error } = await supabase
     .from("bakeries")
@@ -60,6 +70,11 @@ export async function getBakeries() {
 }
 
 export async function getBakeryBySlug(slug: string) {
+  if (!hasSupabaseEnv()) {
+    const { bakeries } = getDemoState();
+    return bakeries.find((b) => b.slug === slug) || null;
+  }
+
   const supabase = await createClient()
   const { data, error } = await supabase
     .from("bakeries")
@@ -76,6 +91,11 @@ export async function getBakeryBySlug(slug: string) {
 }
 
 export async function getBakeryReviews(bakeryId: string) {
+  if (!hasSupabaseEnv()) {
+    const { reviews } = getDemoState();
+    return reviews.filter((r) => r.bakery_id === bakeryId);
+  }
+
   const supabase = await createClient()
   const { data, error } = await supabase
     .from("reviews")
@@ -92,6 +112,12 @@ export async function getBakeryReviews(bakeryId: string) {
 }
 
 export async function getBakeryPhotos(bakeryId: string) {
+  if (!hasSupabaseEnv()) {
+    const { photos, reviews } = getDemoState();
+    const reviewIds = reviews.filter((r) => r.bakery_id === bakeryId).map((r) => r.id);
+    return photos.filter((p) => reviewIds.includes(p.review_id));
+  }
+
   const supabase = await createClient()
   const { data, error } = await supabase
     .from("review_photos")
@@ -108,6 +134,11 @@ export async function getBakeryPhotos(bakeryId: string) {
 }
 
 export async function createBakery(data: BakeryInsert) {
+  // Demo mode handles mutations via its own addDemoBakery, but for server-side logic:
+  if (!hasSupabaseEnv()) {
+    throw new Error("Mutation not supported in demo mode via queries.ts");
+  }
+
   const supabase = await createClient()
   const { data: bakery, error } = await supabase
     .from("bakeries")
@@ -123,32 +154,48 @@ export async function createBakery(data: BakeryInsert) {
 }
 
 export async function getFilteredBakeries(filters: BakeryFilters): Promise<BakeryWithStats[]> {
-  const supabase = await createClient();
-  let query = supabase
-    .from("bakeries")
-    .select("*, bakery_badges(*), reviews(overall_rating, egg_rating, scam_level, taste_rating, freshness_rating, price_rating)");
+  let rawBakeries: (Database["public"]["Tables"]["bakeries"]["Row"] & { 
+    reviews?: Pick<Database["public"]["Tables"]["reviews"]["Row"], "overall_rating" | "egg_rating" | "scam_level" | "taste_rating" | "freshness_rating" | "price_rating">[]; 
+    bakery_badges?: Database["public"]["Tables"]["bakery_badges"]["Row"][]; 
+  })[] = [];
+  let allReviews: Database["public"]["Tables"]["reviews"]["Row"][] = [];
 
-  if (filters.search) {
-    query = query.ilike("name", `%${filters.search}%`);
-  }
-  if (filters.city && filters.city !== "all") {
-    query = query.eq("city", filters.city);
-  }
-  if (filters.district && filters.district !== "all") {
-    query = query.eq("district", filters.district);
-  }
+  if (!hasSupabaseEnv()) {
+    const state = getDemoState();
+    rawBakeries = state.bakeries;
+    allReviews = state.reviews;
+  } else {
+    const supabase = await createClient();
+    let query = supabase
+      .from("bakeries")
+      .select("*, bakery_badges(*), reviews(overall_rating, egg_rating, scam_level, taste_rating, freshness_rating, price_rating)");
 
-  const { data, error } = await query;
+    if (filters.search) {
+      query = query.ilike("name", `%${filters.search}%`);
+    }
+    if (filters.city && filters.city !== "all") {
+      query = query.eq("city", filters.city);
+    }
+    if (filters.district && filters.district !== "all") {
+      query = query.eq("district", filters.district);
+    }
 
-  if (error) {
-    console.error("Error fetching filtered bakeries:", error);
-    return [];
+    const { data, error } = await query;
+
+    if (error) {
+      console.error("Error fetching filtered bakeries:", error);
+      return [];
+    }
+    rawBakeries = data;
   }
 
   // Calculate averages client-side or via a more complex query. 
   // For MVP, we'll map them here to include calculated stats.
-  const bakeriesWithStats = data.map((bakery) => {
-    const reviews = bakery.reviews || [];
+  const bakeriesWithStats = rawBakeries.map((bakery) => {
+    // If in demo mode, reviews are in allReviews, otherwise they were fetched in the query
+    const reviews = hasSupabaseEnv() 
+      ? (bakery.reviews || []) 
+      : allReviews.filter(r => r.bakery_id === bakery.id);
 
     return {
       ...bakery,
@@ -156,19 +203,34 @@ export async function getFilteredBakeries(filters: BakeryFilters): Promise<Baker
     };
   }) as BakeryWithStats[];
 
-  // Sorting
-  if (filters.sort === "top-rated") {
-    bakeriesWithStats.sort((a, b) => b.stats.avgOverall - a.stats.avgOverall);
-  } else if (filters.sort === "most-reviewed") {
-    bakeriesWithStats.sort((a, b) => b.stats.reviewCount - a.stats.reviewCount);
-  } else if (filters.sort === "lowest-scam") {
-    bakeriesWithStats.sort((a, b) => a.stats.avgScam - b.stats.avgScam);
-  } else {
-    // newest default
-    bakeriesWithStats.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  // Applying local filters for demo mode
+  let filtered = bakeriesWithStats;
+  if (!hasSupabaseEnv()) {
+    if (filters.search) {
+      const term = filters.search.toLowerCase();
+      filtered = filtered.filter(b => b.name.toLowerCase().includes(term));
+    }
+    if (filters.city && filters.city !== "all") {
+      filtered = filtered.filter(b => b.city === filters.city);
+    }
+    if (filters.district && filters.district !== "all") {
+      filtered = filtered.filter(b => b.district === filters.district);
+    }
   }
 
-  return bakeriesWithStats;
+  // Sorting
+  if (filters.sort === "top-rated") {
+    filtered.sort((a, b) => b.stats.avgOverall - a.stats.avgOverall);
+  } else if (filters.sort === "most-reviewed") {
+    filtered.sort((a, b) => b.stats.reviewCount - a.stats.reviewCount);
+  } else if (filters.sort === "lowest-scam") {
+    filtered.sort((a, b) => a.stats.avgScam - b.stats.avgScam);
+  } else {
+    // newest default
+    filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  }
+
+  return filtered;
 }
 
 export async function getBakeryMapMarkers(): Promise<BakeryMapMarker[]> {
@@ -189,21 +251,29 @@ export async function getBakeryMapMarkers(): Promise<BakeryMapMarker[]> {
 }
 
 export async function getBakeryStats(bakeryId: string) {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("reviews")
-    .select("overall_rating, egg_rating, scam_level, taste_rating, freshness_rating, price_rating")
-    .eq("bakery_id", bakeryId);
+  let reviews: Pick<Database["public"]["Tables"]["reviews"]["Row"], "overall_rating" | "egg_rating" | "scam_level" | "taste_rating" | "freshness_rating" | "price_rating">[] = [];
 
-  if (error) {
-    console.error("Error fetching bakery stats:", error);
-    return null;
+  if (!hasSupabaseEnv()) {
+    const { reviews: allReviews } = getDemoState();
+    reviews = allReviews.filter(r => r.bakery_id === bakeryId);
+  } else {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("reviews")
+      .select("overall_rating, egg_rating, scam_level, taste_rating, freshness_rating, price_rating")
+      .eq("bakery_id", bakeryId);
+
+    if (error) {
+      console.error("Error fetching bakery stats:", error);
+      return null;
+    }
+    reviews = data;
   }
 
-  const count = data.length;
+  const count = reviews.length;
   if (count === 0) return { avgOverall: 0, avgEgg: 0, avgScam: 0, avgTaste: 0, avgFreshness: 0, avgPrice: 0, count: 0 };
 
-  const sum = data.reduce((acc, r) => ({
+  const sum = reviews.reduce((acc, r) => ({
     overall: acc.overall + Number(r.overall_rating),
     egg: acc.egg + Number(r.egg_rating),
     scam: acc.scam + Number(r.scam_level),

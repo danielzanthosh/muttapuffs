@@ -62,6 +62,7 @@ export function Footer() {
             <li><Link href="/leaderboards" className="hover:text-warm-orange">The Mutta Score</Link></li>
             <li><Link href="/bakeries" className="hover:text-warm-orange">Report a Scam</Link></li>
             <li><Link href="/signup" className="hover:text-warm-orange">Community Hall</Link></li>
+            <li><Link href="#" className="hover:text-warm-orange text-tomato-red italic underline underline-offset-4">Give Feedback</Link></li>
           </ul>
         </div>
 

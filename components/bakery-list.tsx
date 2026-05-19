@@ -7,8 +7,8 @@ import gsap from "gsap";
 import { BakeryWithStats } from "@/types/bakery";
 import { BakeryCard } from "./bakery-card";
 import { BakeryFilters } from "./bakery-filters";
-import { BadgeChip, RatingPill, ScamLevelBadge } from "./ui-primitives";
-import { CalendarCheck, FileText, MapPin, MessageCircle, ReceiptText, Tag, X } from "lucide-react";
+import { BadgeChip, ScamLevelBadge } from "./ui-primitives";
+import { AlertTriangle, CalendarCheck, FileText, MapPin, MessageCircle, Plus, ReceiptText, Tag, X } from "lucide-react";
 
 export function BakeryList({ bakeries }: { bakeries: BakeryWithStats[] }) {
   const [selectedBakery, setSelectedBakery] = useState<BakeryWithStats | null>(null);
@@ -80,114 +80,152 @@ function BakeryDetailDialog({ bakery, onClose }: { bakery: BakeryWithStats; onCl
 
   return (
     <div
-      className="fixed inset-0 z-[80] flex items-end bg-chocolate-brown/45 p-0 sm:items-center sm:p-4"
+      className="fixed inset-0 z-[100] flex bg-bakery-paper overflow-y-auto"
       role="presentation"
-      onMouseDown={onClose}
     >
       <section
         role="dialog"
         aria-modal="true"
         aria-labelledby="bakery-detail-title"
-        className="max-h-[92dvh] w-full overflow-y-auto border-4 border-chocolate-brown bg-bakery-paper p-4 shadow-brutalist-lg sm:mx-auto sm:max-w-5xl sm:p-6"
+        className="min-h-screen w-full p-6 sm:p-12 relative"
         onMouseDown={(event) => event.stopPropagation()}
       >
-        <div className="mb-5 flex items-start justify-between gap-3">
-          <div>
-            <div className="comic-badge mb-3 bg-egg-yellow text-chocolate-brown">{flavor.caseFile}</div>
-            <h2 id="bakery-detail-title" className="text-4xl font-black tracking-tighter sm:text-6xl">
-              {bakery.name}
-            </h2>
-            <div className="mt-2 flex items-center gap-2 text-sm font-black opacity-70">
-              <MapPin size={16} />
-              {location || "Kerala location pending"}
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Close bakery case file"
-            className="grid h-11 w-11 shrink-0 place-items-center rounded-brutalist border-3 border-chocolate-brown bg-white shadow-brutalist-sm transition-transform hover:translate-x-0.5 hover:translate-y-0.5"
-          >
-            <X size={24} />
-          </button>
-        </div>
-
-        <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="space-y-5">
-            <div className="border-4 border-chocolate-brown bg-white p-5 shadow-brutalist-md">
-              <div className="mb-3 flex items-center gap-2 font-comic text-xs font-black uppercase tracking-wide text-tomato-red">
-                <FileText size={16} />
-                Investigation Notes
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-8 flex items-start justify-between gap-4">
+            <div>
+              <div className="comic-badge mb-4 bg-egg-yellow text-chocolate-brown px-4 py-1 text-sm">{flavor.caseFile}</div>
+              <h2 id="bakery-detail-title" className="text-5xl font-black tracking-tighter sm:text-7xl lg:text-8xl">
+                {bakery.name}
+              </h2>
+              <div className="mt-4 flex items-center gap-3 text-lg font-black opacity-70">
+                <MapPin size={24} className="text-tomato-red" />
+                {location || "Kerala location pending"}
               </div>
-              <p className="text-lg font-bold leading-relaxed">{notes}</p>
             </div>
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              <EvidencePanel
-                title="Bakery Evidence"
-                icon={<ReceiptText size={16} />}
-                lines={[
-                  flavor.receipt,
-                  `${bakery.stats.reviewCount} community report${bakery.stats.reviewCount === 1 ? "" : "s"} filed.`,
-                  `Scam reading: ${flavor.statusLabel.toLowerCase()}.`,
-                ]}
-              />
-              <EvidencePanel
-                title="Field Log"
-                icon={<CalendarCheck size={16} />}
-                lines={[
-                  `Last checked: ${lastChecked}`,
-                  bakery.address ? `Address: ${bakery.address}` : "Address evidence not filed yet.",
-                  bakery.phone ? `Phone: ${bakery.phone}` : "Phone contact not filed yet.",
-                ]}
-              />
-            </div>
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Close bakery case file"
+              className="sticky top-6 grid h-14 w-14 shrink-0 place-items-center rounded-brutalist border-4 border-chocolate-brown bg-white shadow-brutalist transition-transform hover:translate-x-1 hover:translate-y-1 hover:shadow-brutalist-sm"
+            >
+              <X size={32} />
+            </button>
           </div>
 
-          <aside className="space-y-5">
-            <div className="border-4 border-chocolate-brown bg-egg-yellow p-5 shadow-brutalist-md">
-              <div className="mb-4 font-comic text-xs font-black uppercase tracking-wide">Live Receipt</div>
-              <ScoreRow label="Puff score" value={`${bakery.stats.avgOverall.toFixed(1)}/10`} />
-              <ScoreRow label="Mutta score" value={`${bakery.stats.avgEgg.toFixed(1)}/10`} />
-              <ScoreRow label="Taste" value={`${(bakery.stats.avgTaste ?? bakery.stats.avgOverall).toFixed(1)}/10`} />
-              <ScoreRow label="Freshness" value={`${(bakery.stats.avgFreshness ?? bakery.stats.avgOverall).toFixed(1)}/10`} />
-              <ScoreRow label="Price" value={`${(bakery.stats.avgPrice ?? bakery.stats.avgOverall).toFixed(1)}/10`} />
-            </div>
+          <div className="grid gap-12 lg:grid-cols-[1.2fr_0.8fr]">
+            <div className="space-y-10">
+              <div className="border-4 border-chocolate-brown bg-white p-8 sm:p-12 shadow-brutalist">
+                <div className="mb-8 flex items-center gap-3 font-comic text-sm font-black uppercase tracking-widest text-tomato-red">
+                  <FileText size={24} />
+                  Official Investigation Notes
+                </div>
+                <p className="text-2xl sm:text-3xl font-bold leading-relaxed">{notes}</p>
+              </div>
 
-            <div className="border-4 border-chocolate-brown bg-white p-5 shadow-brutalist-md">
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <ScamLevelBadge level={bakery.stats.avgScam} />
-                <div className={`border-3 border-chocolate-brown px-3 py-1 font-comic text-xs font-black uppercase text-white ${flavor.statusColor}`}>
-                  {flavor.statusLabel}
+              <div className="grid gap-8 sm:grid-cols-2">
+                <EvidencePanel
+                  title="Bakery Evidence"
+                  icon={<ReceiptText size={24} />}
+                  lines={[
+                    flavor.receipt,
+                    `${bakery.stats.reviewCount} community report${bakery.stats.reviewCount === 1 ? "" : "s"} filed.`,
+                    `Scam reading: ${flavor.statusLabel.toLowerCase()}.`,
+                  ]}
+                />
+                <EvidencePanel
+                  title="Field Log"
+                  icon={<CalendarCheck size={24} />}
+                  lines={[
+                    `Last checked: ${lastChecked}`,
+                    bakery.address ? `Address: ${bakery.address}` : "Address evidence not filed yet.",
+                    bakery.phone ? `Phone: ${bakery.phone}` : "Phone contact not filed yet.",
+                  ]}
+                />
+              </div>
+
+              {/* Interaction Section */}
+              <div className="border-4 border-chocolate-brown bg-white p-8 shadow-brutalist space-y-6">
+                <div className="font-comic text-sm font-black uppercase tracking-widest border-b-4 border-chocolate-brown pb-4 mb-4">Case Interaction</div>
+                <p className="font-bold opacity-70 italic">Witnessed something? Add your testimony to the official record or flag deceptive puffs.</p>
+                <div className="flex flex-col sm:flex-row gap-6">
+                  <Link 
+                    href={`/bakeries/${bakery.slug}/review`}
+                    className="btn-primary flex-1 flex items-center justify-center gap-3 py-6 text-2xl"
+                  >
+                    <Plus size={28} />
+                    GIVE REMARKS
+                  </Link>
+                  <Link 
+                    href={`/bakeries/${bakery.slug}/review`}
+                    className="border-4 border-chocolate-brown bg-tomato-red text-white font-black px-10 py-6 text-2xl shadow-brutalist hover:translate-x-1 hover:translate-y-1 hover:shadow-brutalist-sm transition-all flex items-center justify-center gap-3"
+                  >
+                    <AlertTriangle size={28} />
+                    REPORT SCAM
+                  </Link>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                <RatingPill value={bakery.stats.avgOverall} label="PUFF" />
-                <RatingPill value={bakery.stats.avgEgg} label="MUTTA" />
-              </div>
-              <div className="mt-5 flex items-center gap-2 border-t-2 border-dashed border-chocolate-brown/20 pt-4 text-xs font-black uppercase opacity-70">
-                <MessageCircle size={15} />
-                {bakery.stats.reviewCount} report{bakery.stats.reviewCount === 1 ? "" : "s"}
-              </div>
             </div>
 
-            <div className="border-4 border-chocolate-brown bg-white p-5 shadow-brutalist-md">
-              <div className="mb-3 flex items-center gap-2 font-comic text-xs font-black uppercase tracking-wide">
-                <Tag size={16} />
-                Case Tags
+            <aside className="space-y-10">
+              <div className="border-4 border-chocolate-brown bg-egg-yellow p-10 shadow-brutalist">
+                <div className="mb-8 font-comic text-sm font-black uppercase tracking-widest border-b-2 border-chocolate-brown pb-2">Live Receipt</div>
+                <ScoreRow label="Puff score" value={`${bakery.stats.avgOverall.toFixed(1)}/10`} />
+                <ScoreRow label="Mutta score" value={`${bakery.stats.avgEgg.toFixed(1)}/10`} />
+                <ScoreRow label="Taste" value={`${(bakery.stats.avgTaste ?? bakery.stats.avgOverall).toFixed(1)}/10`} />
+                <ScoreRow label="Freshness" value={`${(bakery.stats.avgFreshness ?? bakery.stats.avgOverall).toFixed(1)}/10`} />
+                <ScoreRow label="Price" value={`${(bakery.stats.avgPrice ?? bakery.stats.avgOverall).toFixed(1)}/10`} />
               </div>
-              <div className="flex flex-wrap gap-2">
-                {bakery.bakery_badges.length ? (
-                  bakery.bakery_badges.map((badge) => (
-                    <BadgeChip key={badge.id} type={badge.badge_type} label={badge.label} />
-                  ))
-                ) : (
-                  <span className="comic-badge bg-bakery-paper text-chocolate-brown">NO BADGES FILED</span>
-                )}
-                <span className={`comic-badge text-white ${flavor.statusColor}`}>{flavor.evidenceLabel}</span>
+
+              <div className="border-4 border-chocolate-brown bg-white p-10 shadow-brutalist">
+                <div className="mb-8 flex items-center justify-between gap-6">
+                  <ScamLevelBadge level={bakery.stats.avgScam} />
+                  <div className={`border-3 border-chocolate-brown px-6 py-3 font-comic text-sm font-black uppercase text-white ${flavor.statusColor} shadow-brutalist-sm rotate-1`}>
+                    {flavor.statusLabel}
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="flex flex-col items-center border-4 border-chocolate-brown p-6 bg-bakery-paper shadow-brutalist-sm">
+                    <span className="text-[12px] font-black uppercase mb-2">PUFF</span>
+                    <span className="text-5xl font-black">{bakery.stats.avgOverall.toFixed(1)}</span>
+                  </div>
+                  <div className="flex flex-col items-center border-4 border-chocolate-brown p-6 bg-egg-yellow shadow-brutalist-sm">
+                    <span className="text-[12px] font-black uppercase mb-2">MUTTA</span>
+                    <span className="text-5xl font-black">{bakery.stats.avgEgg.toFixed(1)}</span>
+                  </div>
+                </div>
+                <div className="mt-10 flex items-center gap-4 border-t-4 border-dashed border-chocolate-brown/20 pt-8 text-sm font-black uppercase opacity-70">
+                  <MessageCircle size={24} />
+                  {bakery.stats.reviewCount} total report{bakery.stats.reviewCount === 1 ? "" : "s"} filed
+                </div>
               </div>
-            </div>
-          </aside>
+
+              <div className="border-4 border-chocolate-brown bg-white p-8 shadow-brutalist">
+                <div className="mb-6 flex items-center gap-3 font-comic text-sm font-black uppercase tracking-widest">
+                  <Tag size={24} />
+                  Case Tags
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  {bakery.bakery_badges.length ? (
+                    bakery.bakery_badges.map((badge) => (
+                      <BadgeChip key={badge.id} type={badge.badge_type} label={badge.label} className="text-xs py-1 px-3" />
+                    ))
+                  ) : (
+                    <span className="comic-badge bg-bakery-paper text-chocolate-brown">NO BADGES FILED</span>
+                  )}
+                  <span className={`comic-badge text-white ${flavor.statusColor} rotate-0`}>{flavor.evidenceLabel}</span>
+                </div>
+              </div>
+
+              <div className="flex justify-center pt-10 pb-20 lg:pb-0">
+                <button 
+                  onClick={onClose}
+                  className="btn-secondary w-full py-6 text-2xl shadow-brutalist-lg active:shadow-none translate-x-[-4px] translate-y-[-4px] active:translate-x-0 active:translate-y-0"
+                >
+                  CLOSE CASE FILE
+                </button>
+              </div>
+            </aside>
+          </div>
         </div>
       </section>
     </div>

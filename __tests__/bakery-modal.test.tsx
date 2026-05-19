@@ -79,7 +79,7 @@ describe("BakeryList detail modal", () => {
     expect(window.location.pathname).toBe("/bakeries");
     expect(screen.getByRole("dialog", { name: /best bakers/i })).toBeTruthy();
     expect(screen.getByText("No investigation notes available yet.")).toBeTruthy();
-    expect(screen.getByText(/CASE FILE/i)).toBeTruthy();
+    expect(screen.getAllByText(/CASE FILE/i).length).toBeGreaterThan(1);
     expect(screen.getByText(/4 community reports filed/i)).toBeTruthy();
   });
 
