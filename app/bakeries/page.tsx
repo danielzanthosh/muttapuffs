@@ -21,9 +21,9 @@ export default async function BakeriesPage({
   return (
     <>
       <Navbar />
-      <main className="flex-grow bg-bakery-paper px-4 pb-20 pt-6 md:pt-8">
+      <main className="flex-grow bg-bakery-paper px-4 pb-20 pt-0">
         <div className="mx-auto max-w-7xl">
-          <div className="mb-10 flex flex-col justify-between gap-6 md:flex-row md:items-end">
+          <div className="mb-8 flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div>
               <div className="comic-badge mb-4 bg-egg-yellow uppercase">PUFF DIRECTORY</div>
               <h1 className="text-5xl md:text-7xl font-black tracking-tighter">
