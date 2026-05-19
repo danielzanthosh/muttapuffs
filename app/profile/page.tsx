@@ -4,6 +4,7 @@ import { Footer } from "@/components/footer";
 import { redirect } from "next/navigation";
 import { logout } from "@/app/auth/actions";
 import Link from "next/link";
+import { buildOAuthProfileDraft } from "@/lib/oauth-profile";
 
 export default async function ProfilePage() {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
@@ -17,15 +18,31 @@ export default async function ProfilePage() {
     redirect("/login");
   }
 
-  const { data: profile } = await supabase
+  const { data: existingProfile } = await supabase
     .from("profiles")
     .select("*")
     .eq("id", user.id)
-    .single();
+    .maybeSingle();
+
+  let profile = existingProfile;
 
   if (!profile) {
-    // This shouldn't happen if signup action worked, but good to handle
-    return <div>Profile not found. Please contact support.</div>;
+    const draft = buildOAuthProfileDraft({
+      id: user.id,
+      email: user.email,
+      metadata: user.user_metadata,
+    });
+    const { data: createdProfile } = await supabase
+      .from("profiles")
+      .insert(draft)
+      .select("*")
+      .single();
+
+    profile = createdProfile;
+  }
+
+  if (!profile) {
+    redirect("/profile/edit");
   }
 
   return (
@@ -39,6 +56,7 @@ export default async function ProfilePage() {
               <div className="absolute -bottom-12 left-8">
                 <div className="w-24 h-24 bg-bakery-cream border-4 border-chocolate-brown rounded-brutalist shadow-brutalist-md overflow-hidden flex items-center justify-center">
                   {profile.avatar_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element -- User avatars can come from arbitrary OAuth providers.
                     <img src={profile.avatar_url} alt={profile.username} className="w-full h-full object-cover" />
                   ) : (
                     <span className="text-4xl font-black">ID</span>
