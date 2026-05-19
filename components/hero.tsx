@@ -24,7 +24,7 @@ export function Hero() {
   }, []);
 
   return (
-    <section ref={heroRef} className="relative overflow-hidden px-4 pb-20 pt-16 md:pt-20">
+    <section ref={heroRef} className="relative overflow-hidden px-4 pb-20 pt-3 md:pt-4">
       <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-stretch">
         <div className="border-4 border-chocolate-brown bg-white p-5 shadow-brutalist-lg md:p-8" data-hero-reveal>
           <div className="mb-6 flex flex-wrap gap-3">
@@ -82,7 +82,7 @@ export function Hero() {
             <div className="border-4 border-chocolate-brown bg-white p-5 shadow-brutalist-md">
               <div className="text-xs font-black uppercase opacity-60">Community Note</div>
               <p className="mt-3 font-comic text-2xl font-black leading-tight">
-                "Egg smell only" is not a review. It is evidence.
+                &ldquo;Egg smell only&rdquo; is not a review. It is evidence.
               </p>
             </div>
           </div>
