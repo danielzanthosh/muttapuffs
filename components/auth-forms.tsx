@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { login, signInWithGoogle, signup } from "@/app/auth/actions";
 
 export function LoginForm() {
@@ -75,9 +76,9 @@ export function LoginForm() {
         onClick={handleGoogleSignIn}
         className="flex w-full items-center justify-center gap-3 rounded-brutalist border-3 border-chocolate-brown bg-white px-4 py-4 text-sm font-black uppercase shadow-brutalist-sm transition-transform active:translate-x-1 active:translate-y-1 active:shadow-none disabled:opacity-50"
       >
-        <span className="grid size-6 place-items-center rounded-full border-2 border-chocolate-brown bg-bakery-cream text-base normal-case">
-          G
-        </span>
+        <div className="grid size-6 place-items-center rounded-full border-2 border-chocolate-brown bg-white p-0.5">
+          <Image src="/google.svg" alt="Google Logo" width={16} height={16} />
+        </div>
         Sign in with Google
       </button>
 
@@ -173,9 +174,9 @@ export function SignupForm() {
         onClick={handleGoogleSignIn}
         className="flex w-full items-center justify-center gap-3 rounded-brutalist border-3 border-chocolate-brown bg-white px-4 py-4 text-sm font-black uppercase shadow-brutalist-sm transition-transform active:translate-x-1 active:translate-y-1 active:shadow-none disabled:opacity-50"
       >
-        <span className="grid size-6 place-items-center rounded-full border-2 border-chocolate-brown bg-bakery-cream text-base normal-case">
-          G
-        </span>
+        <div className="grid size-6 place-items-center rounded-full border-2 border-chocolate-brown bg-white p-0.5">
+          <Image src="/google.svg" alt="Google Logo" width={16} height={16} />
+        </div>
         Sign up with Google
       </button>
 
