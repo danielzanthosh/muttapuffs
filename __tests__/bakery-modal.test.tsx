@@ -83,6 +83,20 @@ describe("BakeryList detail modal", () => {
     expect(screen.getByText(/4 community reports filed/i)).toBeTruthy();
   });
 
+  it("switches to review form view and back", () => {
+    render(<BakeryList bakeries={[sampleBakery]} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /best bakers/i }));
+    fireEvent.click(screen.getByRole("button", { name: /give remarks/i }));
+
+    expect(screen.getByText(/File a Field Investigation/i)).toBeTruthy();
+    expect(screen.getByRole("button", { name: /file puff report/i })).toBeTruthy();
+
+    // Go back
+    fireEvent.click(screen.getByRole("button", { name: "" })); // The back button with ArrowLeft icon
+    expect(screen.queryByText(/File a Field Investigation/i)).toBeNull();
+  });
+
   it("closes bakery details with Escape", () => {
     render(<BakeryList bakeries={[sampleBakery]} />);
 

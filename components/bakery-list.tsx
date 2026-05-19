@@ -7,8 +7,9 @@ import gsap from "gsap";
 import { BakeryWithStats } from "@/types/bakery";
 import { BakeryCard } from "./bakery-card";
 import { BakeryFilters } from "./bakery-filters";
+import { ReviewForm } from "./review-form";
 import { BadgeChip, ScamLevelBadge } from "./ui-primitives";
-import { AlertTriangle, CalendarCheck, FileText, MapPin, MessageCircle, Plus, ReceiptText, Tag, X } from "lucide-react";
+import { AlertTriangle, ArrowLeft, CalendarCheck, FileText, MapPin, MessageCircle, Plus, ReceiptText, Tag, X } from "lucide-react";
 
 export function BakeryList({ bakeries }: { bakeries: BakeryWithStats[] }) {
   const [selectedBakery, setSelectedBakery] = useState<BakeryWithStats | null>(null);
@@ -73,6 +74,7 @@ export function BakeryList({ bakeries }: { bakeries: BakeryWithStats[] }) {
 }
 
 function BakeryDetailDialog({ bakery, onClose }: { bakery: BakeryWithStats; onClose: () => void }) {
+  const [view, setView] = useState<"details" | "review">("details");
   const flavor = useMemo(() => getBakeryFlavor(bakery), [bakery]);
   const location = [bakery.city, bakery.district].filter(Boolean).join(", ");
   const notes = bakery.description?.trim() || "No investigation notes available yet.";
@@ -102,130 +104,153 @@ function BakeryDetailDialog({ bakery, onClose }: { bakery: BakeryWithStats; onCl
                 {location || "Kerala location pending"}
               </div>
             </div>
-            <button
-              type="button"
-              onClick={onClose}
-              aria-label="Close bakery case file"
-              className="sticky top-6 grid h-14 w-14 shrink-0 place-items-center rounded-brutalist border-4 border-chocolate-brown bg-white shadow-brutalist transition-transform hover:translate-x-1 hover:translate-y-1 hover:shadow-brutalist-sm"
-            >
-              <X size={32} />
-            </button>
-          </div>
-
-          <div className="grid gap-12 lg:grid-cols-[1.2fr_0.8fr]">
-            <div className="space-y-10">
-              <div className="border-4 border-chocolate-brown bg-white p-8 sm:p-12 shadow-brutalist">
-                <div className="mb-8 flex items-center gap-3 font-comic text-sm font-black uppercase tracking-widest text-tomato-red">
-                  <FileText size={24} />
-                  Official Investigation Notes
-                </div>
-                <p className="text-2xl sm:text-3xl font-bold leading-relaxed">{notes}</p>
-              </div>
-
-              <div className="grid gap-8 sm:grid-cols-2">
-                <EvidencePanel
-                  title="Bakery Evidence"
-                  icon={<ReceiptText size={24} />}
-                  lines={[
-                    flavor.receipt,
-                    `${bakery.stats.reviewCount} community report${bakery.stats.reviewCount === 1 ? "" : "s"} filed.`,
-                    `Scam reading: ${flavor.statusLabel.toLowerCase()}.`,
-                  ]}
-                />
-                <EvidencePanel
-                  title="Field Log"
-                  icon={<CalendarCheck size={24} />}
-                  lines={[
-                    `Last checked: ${lastChecked}`,
-                    bakery.address ? `Address: ${bakery.address}` : "Address evidence not filed yet.",
-                    bakery.phone ? `Phone: ${bakery.phone}` : "Phone contact not filed yet.",
-                  ]}
-                />
-              </div>
-
-              {/* Interaction Section */}
-              <div className="border-4 border-chocolate-brown bg-white p-8 shadow-brutalist space-y-6">
-                <div className="font-comic text-sm font-black uppercase tracking-widest border-b-4 border-chocolate-brown pb-4 mb-4">Case Interaction</div>
-                <p className="font-bold opacity-70 italic">Witnessed something? Add your testimony to the official record or flag deceptive puffs.</p>
-                <div className="flex flex-col sm:flex-row gap-6">
-                  <Link 
-                    href={`/bakeries/${bakery.slug}/review`}
-                    className="btn-primary flex-1 flex items-center justify-center gap-3 py-6 text-2xl"
-                  >
-                    <Plus size={28} />
-                    GIVE REMARKS
-                  </Link>
-                  <Link 
-                    href={`/bakeries/${bakery.slug}/review`}
-                    className="border-4 border-chocolate-brown bg-tomato-red text-white font-black px-10 py-6 text-2xl shadow-brutalist hover:translate-x-1 hover:translate-y-1 hover:shadow-brutalist-sm transition-all flex items-center justify-center gap-3"
-                  >
-                    <AlertTriangle size={28} />
-                    REPORT SCAM
-                  </Link>
-                </div>
-              </div>
-            </div>
-
-            <aside className="space-y-10">
-              <div className="border-4 border-chocolate-brown bg-egg-yellow p-10 shadow-brutalist">
-                <div className="mb-8 font-comic text-sm font-black uppercase tracking-widest border-b-2 border-chocolate-brown pb-2">Live Receipt</div>
-                <ScoreRow label="Puff score" value={`${bakery.stats.avgOverall.toFixed(1)}/10`} />
-                <ScoreRow label="Mutta score" value={`${bakery.stats.avgEgg.toFixed(1)}/10`} />
-                <ScoreRow label="Taste" value={`${(bakery.stats.avgTaste ?? bakery.stats.avgOverall).toFixed(1)}/10`} />
-                <ScoreRow label="Freshness" value={`${(bakery.stats.avgFreshness ?? bakery.stats.avgOverall).toFixed(1)}/10`} />
-                <ScoreRow label="Price" value={`${(bakery.stats.avgPrice ?? bakery.stats.avgOverall).toFixed(1)}/10`} />
-              </div>
-
-              <div className="border-4 border-chocolate-brown bg-white p-10 shadow-brutalist">
-                <div className="mb-8 flex items-center justify-between gap-6">
-                  <ScamLevelBadge level={bakery.stats.avgScam} />
-                  <div className={`border-3 border-chocolate-brown px-6 py-3 font-comic text-sm font-black uppercase text-white ${flavor.statusColor} shadow-brutalist-sm rotate-1`}>
-                    {flavor.statusLabel}
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="flex flex-col items-center border-4 border-chocolate-brown p-6 bg-bakery-paper shadow-brutalist-sm">
-                    <span className="text-[12px] font-black uppercase mb-2">PUFF</span>
-                    <span className="text-5xl font-black">{bakery.stats.avgOverall.toFixed(1)}</span>
-                  </div>
-                  <div className="flex flex-col items-center border-4 border-chocolate-brown p-6 bg-egg-yellow shadow-brutalist-sm">
-                    <span className="text-[12px] font-black uppercase mb-2">MUTTA</span>
-                    <span className="text-5xl font-black">{bakery.stats.avgEgg.toFixed(1)}</span>
-                  </div>
-                </div>
-                <div className="mt-10 flex items-center gap-4 border-t-4 border-dashed border-chocolate-brown/20 pt-8 text-sm font-black uppercase opacity-70">
-                  <MessageCircle size={24} />
-                  {bakery.stats.reviewCount} total report{bakery.stats.reviewCount === 1 ? "" : "s"} filed
-                </div>
-              </div>
-
-              <div className="border-4 border-chocolate-brown bg-white p-8 shadow-brutalist">
-                <div className="mb-6 flex items-center gap-3 font-comic text-sm font-black uppercase tracking-widest">
-                  <Tag size={24} />
-                  Case Tags
-                </div>
-                <div className="flex flex-wrap gap-3">
-                  {bakery.bakery_badges.length ? (
-                    bakery.bakery_badges.map((badge) => (
-                      <BadgeChip key={badge.id} type={badge.badge_type} label={badge.label} className="text-xs py-1 px-3" />
-                    ))
-                  ) : (
-                    <span className="comic-badge bg-bakery-paper text-chocolate-brown">NO BADGES FILED</span>
-                  )}
-                  <span className={`comic-badge text-white ${flavor.statusColor} rotate-0`}>{flavor.evidenceLabel}</span>
-                </div>
-              </div>
-
-              <div className="flex justify-center pt-10 pb-20 lg:pb-0">
-                <button 
-                  onClick={onClose}
-                  className="btn-secondary w-full py-6 text-2xl shadow-brutalist-lg active:shadow-none translate-x-[-4px] translate-y-[-4px] active:translate-x-0 active:translate-y-0"
+            <div className="flex gap-4 sticky top-6">
+              {view === "review" && (
+                <button
+                  type="button"
+                  onClick={() => setView("details")}
+                  className="grid h-14 w-14 place-items-center rounded-brutalist border-4 border-chocolate-brown bg-white shadow-brutalist transition-transform hover:translate-x-1 hover:translate-y-1 hover:shadow-brutalist-sm"
                 >
-                  CLOSE CASE FILE
+                  <ArrowLeft size={32} />
                 </button>
-              </div>
-            </aside>
+              )}
+              <button
+                type="button"
+                onClick={onClose}
+                aria-label="Close bakery case file"
+                className="grid h-14 w-14 place-items-center rounded-brutalist border-4 border-chocolate-brown bg-white shadow-brutalist transition-transform hover:translate-x-1 hover:translate-y-1 hover:shadow-brutalist-sm"
+              >
+                <X size={32} />
+              </button>
+            </div>
           </div>
+
+          {view === "details" ? (
+            <div className="grid gap-12 lg:grid-cols-[1.2fr_0.8fr]">
+              <div className="space-y-10">
+                <div className="border-4 border-chocolate-brown bg-white p-8 sm:p-12 shadow-brutalist">
+                  <div className="mb-8 flex items-center gap-3 font-comic text-sm font-black uppercase tracking-widest text-tomato-red">
+                    <FileText size={24} />
+                    Official Investigation Notes
+                  </div>
+                  <p className="text-2xl sm:text-3xl font-bold leading-relaxed">{notes}</p>
+                </div>
+
+                <div className="grid gap-8 sm:grid-cols-2">
+                  <EvidencePanel
+                    title="Bakery Evidence"
+                    icon={<ReceiptText size={24} />}
+                    lines={[
+                      flavor.receipt,
+                      `${bakery.stats.reviewCount} community report${bakery.stats.reviewCount === 1 ? "" : "s"} filed.`,
+                      `Scam reading: ${flavor.statusLabel.toLowerCase()}.`,
+                    ]}
+                  />
+                  <EvidencePanel
+                    title="Field Log"
+                    icon={<CalendarCheck size={24} />}
+                    lines={[
+                      `Last checked: ${lastChecked}`,
+                      bakery.address ? `Address: ${bakery.address}` : "Address evidence not filed yet.",
+                      bakery.phone ? `Phone: ${bakery.phone}` : "Phone contact not filed yet.",
+                    ]}
+                  />
+                </div>
+
+                {/* Interaction Section */}
+                <div className="border-4 border-chocolate-brown bg-white p-8 shadow-brutalist space-y-6">
+                  <div className="font-comic text-sm font-black uppercase tracking-widest border-b-4 border-chocolate-brown pb-4 mb-4">Case Interaction</div>
+                  <p className="font-bold opacity-70 italic">Witnessed something? Add your testimony to the official record or flag deceptive puffs.</p>
+                  <div className="flex flex-col sm:flex-row gap-6">
+                    <button 
+                      onClick={() => setView("review")}
+                      className="btn-primary flex-1 flex items-center justify-center gap-3 py-6 text-2xl"
+                    >
+                      <Plus size={28} />
+                      GIVE REMARKS
+                    </button>
+                    <button 
+                      onClick={() => setView("review")}
+                      className="border-4 border-chocolate-brown bg-tomato-red text-white font-black px-10 py-6 text-2xl shadow-brutalist hover:translate-x-1 hover:translate-y-1 hover:shadow-brutalist-sm transition-all flex items-center justify-center gap-3"
+                    >
+                      <AlertTriangle size={28} />
+                      REPORT SCAM
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <aside className="space-y-10">
+                <div className="border-4 border-chocolate-brown bg-egg-yellow p-10 shadow-brutalist">
+                  <div className="mb-8 font-comic text-sm font-black uppercase tracking-widest border-b-2 border-chocolate-brown pb-2">Live Receipt</div>
+                  <ScoreRow label="Puff score" value={`${bakery.stats.avgOverall.toFixed(1)}/10`} />
+                  <ScoreRow label="Mutta score" value={`${bakery.stats.avgEgg.toFixed(1)}/10`} />
+                  <ScoreRow label="Taste" value={`${(bakery.stats.avgTaste ?? bakery.stats.avgOverall).toFixed(1)}/10`} />
+                  <ScoreRow label="Freshness" value={`${(bakery.stats.avgFreshness ?? bakery.stats.avgOverall).toFixed(1)}/10`} />
+                  <ScoreRow label="Price" value={`${(bakery.stats.avgPrice ?? bakery.stats.avgOverall).toFixed(1)}/10`} />
+                </div>
+
+                <div className="border-4 border-chocolate-brown bg-white p-10 shadow-brutalist">
+                  <div className="mb-8 flex items-center justify-between gap-6">
+                    <ScamLevelBadge level={bakery.stats.avgScam} />
+                    <div className={`border-3 border-chocolate-brown px-6 py-3 font-comic text-sm font-black uppercase text-white ${flavor.statusColor} shadow-brutalist-sm rotate-1`}>
+                      {flavor.statusLabel}
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="flex flex-col items-center border-4 border-chocolate-brown p-6 bg-bakery-paper shadow-brutalist-sm">
+                      <span className="text-[12px] font-black uppercase mb-2">PUFF</span>
+                      <span className="text-5xl font-black">{bakery.stats.avgOverall.toFixed(1)}</span>
+                    </div>
+                    <div className="flex flex-col items-center border-4 border-chocolate-brown p-6 bg-egg-yellow shadow-brutalist-sm">
+                      <span className="text-[12px] font-black uppercase mb-2">MUTTA</span>
+                      <span className="text-5xl font-black">{bakery.stats.avgEgg.toFixed(1)}</span>
+                    </div>
+                  </div>
+                  <div className="mt-10 flex items-center gap-4 border-t-4 border-dashed border-chocolate-brown/20 pt-8 text-sm font-black uppercase opacity-70">
+                    <MessageCircle size={24} />
+                    {bakery.stats.reviewCount} total report{bakery.stats.reviewCount === 1 ? "" : "s"} filed
+                  </div>
+                </div>
+
+                <div className="border-4 border-chocolate-brown bg-white p-8 shadow-brutalist">
+                  <div className="mb-6 flex items-center gap-3 font-comic text-sm font-black uppercase tracking-widest">
+                    <Tag size={24} />
+                    Case Tags
+                  </div>
+                  <div className="flex flex-wrap gap-3">
+                    {bakery.bakery_badges.length ? (
+                      bakery.bakery_badges.map((badge) => (
+                        <BadgeChip key={badge.id} type={badge.badge_type} label={badge.label} className="text-xs py-1 px-3" />
+                      ))
+                    ) : (
+                      <span className="comic-badge bg-bakery-paper text-chocolate-brown">NO BADGES FILED</span>
+                    )}
+                    <span className={`comic-badge text-white ${flavor.statusColor} rotate-0`}>{flavor.evidenceLabel}</span>
+                  </div>
+                </div>
+
+                <div className="flex justify-center pt-10 pb-20 lg:pb-0">
+                  <button 
+                    onClick={onClose}
+                    className="btn-secondary w-full py-6 text-2xl shadow-brutalist-lg active:shadow-none translate-x-[-4px] translate-y-[-4px] active:translate-x-0 active:translate-y-0"
+                  >
+                    CLOSE CASE FILE
+                  </button>
+                </div>
+              </aside>
+            </div>
+          ) : (
+            <div className="py-10">
+              <ReviewForm 
+                bakeryId={bakery.id} 
+                bakerySlug={bakery.slug} 
+                onSuccess={() => {
+                  setView("details");
+                }} 
+              />
+            </div>
+          )}
         </div>
       </section>
     </div>
