@@ -120,9 +120,9 @@ export function ReviewForm({ bakeryId, bakerySlug }: { bakeryId: string; bakeryS
   }
 
   return (
-    <div className="brutalist-card p-8 bg-white max-w-3xl w-full mx-auto">
+    <div className="brutalist-card bg-white p-5 sm:p-8 max-w-3xl w-full mx-auto">
       <div className="comic-badge bg-egg-yellow mb-6 uppercase">NEW PUFF REPORT</div>
-      <h2 className="text-3xl font-black mb-8 tracking-tighter">File a Field Investigation</h2>
+      <h2 className="text-2xl sm:text-3xl font-black mb-8 tracking-tighter">File a Field Investigation</h2>
 
       {error && (
         <div className="p-4 mb-6 bg-tomato-red text-white border-3 border-chocolate-brown rounded-brutalist font-bold">
@@ -163,7 +163,7 @@ export function ReviewForm({ bakeryId, bakerySlug }: { bakeryId: string; bakeryS
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-          <div className="p-6 bg-bakery-paper border-3 border-chocolate-brown rounded-brutalist relative overflow-hidden h-fit">
+          <div className="p-5 sm:p-6 bg-bakery-paper border-3 border-chocolate-brown rounded-brutalist relative overflow-hidden h-fit">
             <div className="absolute top-0 right-0 bg-tomato-red text-white font-black text-[8px] px-2 py-1 uppercase rotate-[-45deg] translate-x-3 translate-y-1">DANGER</div>
             <RatingSlider 
               label="Scam Level" 
@@ -226,7 +226,7 @@ export function ReviewForm({ bakeryId, bakerySlug }: { bakeryId: string; bakeryS
           <button 
             disabled={isPending}
             type="submit"
-            className="btn-primary flex-grow text-2xl py-6 disabled:opacity-50 shadow-brutalist-lg active:shadow-none translate-x-[-4px] translate-y-[-4px] active:translate-x-0 active:translate-y-0"
+            className="btn-primary min-w-0 flex-grow text-lg sm:text-2xl py-5 sm:py-6 disabled:opacity-50 shadow-brutalist-lg active:shadow-none sm:translate-x-[-4px] sm:translate-y-[-4px] active:translate-x-0 active:translate-y-0"
           >
             {isPending ? "SUBMITTING EVIDENCE..." : "FILE PUFF REPORT"}
           </button>

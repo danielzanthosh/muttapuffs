@@ -10,6 +10,14 @@ export interface CloudinaryUploadResult {
   bytes: number;
 }
 
+interface CloudinarySignatureResponse {
+  cloudName: string;
+  apiKey: string;
+  folder: string;
+  timestamp: number;
+  signature: string;
+}
+
 /**
  * Validates if a file is a supported image type and under size limit
  */
@@ -88,23 +96,30 @@ export async function compressImageClient(file: File): Promise<Blob> {
 }
 
 /**
- * Uploads a file/blob to Cloudinary using an unsigned preset
+ * Uploads a file/blob to Cloudinary using a short-lived server signature.
  */
 export async function uploadToCloudinary(
   file: File | Blob, 
   onProgress?: (progress: number) => void
 ): Promise<CloudinaryUploadResult> {
-  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-  const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+  const signatureResponse = await fetch("/api/cloudinary/signature", {
+    method: "POST",
+  });
 
-  if (!cloudName || !uploadPreset) {
-    throw new Error("Cloudinary configuration missing in environment variables.");
+  if (!signatureResponse.ok) {
+    const result = await signatureResponse.json().catch(() => null);
+    throw new Error(result?.error || "Cloudinary upload authorization failed.");
   }
+
+  const { cloudName, apiKey, folder, timestamp, signature } =
+    (await signatureResponse.json()) as CloudinarySignatureResponse;
 
   const formData = new FormData();
   formData.append('file', file);
-  formData.append('upload_preset', uploadPreset);
-  formData.append('folder', 'muttameter/proof');
+  formData.append('api_key', apiKey);
+  formData.append('folder', folder);
+  formData.append('timestamp', String(timestamp));
+  formData.append('signature', signature);
 
   const xhr = new XMLHttpRequest();
   const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;

@@ -1,6 +1,6 @@
 # MuttaMeter
 
-MuttaMeter is a production-quality MVP for Kerala bakery discovery and mutta puff investigations. It is built with Next.js App Router, TypeScript, Tailwind CSS, Supabase, Cloudinary unsigned uploads, Leaflet/OpenStreetMap, GSAP, and Zod.
+MuttaMeter is a production-quality MVP for Kerala bakery discovery and mutta puff investigations. It is built with Next.js App Router, TypeScript, Tailwind CSS, Supabase, signed Cloudinary uploads, Leaflet/OpenStreetMap, GSAP, and Zod.
 
 ## What Is Built
 
@@ -15,16 +15,36 @@ MuttaMeter is a production-quality MVP for Kerala bakery discovery and mutta puf
 
 ## Environment Variables
 
-Create a local `.env.local` using `.env.example` as the template:
+Create a local `.env.local` using `.env.example` as the template. Add the same variables in Vercel under Project Settings -> Environment Variables for Production, Preview, and Development as needed:
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+NEXT_PUBLIC_SITE_URL=https://muttapuffs.vercel.app
+NEXT_PUBLIC_SUPABASE_URL=https://zxndsoidjxipqxjyvgmw.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-or-publishable-key
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your-cloud-name
-NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=your-unsigned-upload-preset
+CLOUDINARY_API_KEY=your-cloudinary-api-key
+CLOUDINARY_API_SECRET=your-cloudinary-api-secret
 ```
 
-Do not expose Cloudinary API secrets in client-side environment variables. This MVP uses unsigned uploads.
+Do not expose Cloudinary API secrets in `NEXT_PUBLIC_` variables. Puff proof uploads now ask `/api/cloudinary/signature` for a short-lived server signature and then post directly to Cloudinary, so no unsigned upload preset is required.
+
+For Sign in with Google, enable Google in Supabase Auth -> Providers, add your Google OAuth client ID and client secret there, and allow this production callback URL in Supabase redirect URLs:
+
+```text
+https://muttapuffs.vercel.app/auth/callback
+```
+
+The Google OAuth web client must use this authorized JavaScript origin:
+
+```text
+https://muttapuffs.vercel.app
+```
+
+And this authorized redirect URI:
+
+```text
+https://zxndsoidjxipqxjyvgmw.supabase.co/auth/v1/callback
+```
 
 ## Run Locally
 

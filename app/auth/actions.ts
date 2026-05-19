@@ -1,7 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { getAuthCallbackUrl } from "@/lib/auth-redirect";
 import { createClient } from "@/lib/supabase/server";
 import { authSchema, formValue, normalizeUsername, signupSchema } from "@/lib/validation";
 
@@ -108,4 +110,36 @@ export async function logout() {
 
   revalidatePath("/", "layout");
   redirect("/");
+}
+
+export async function signInWithGoogle() {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    return { error: "Supabase environment variables are required for Google sign-in." };
+  }
+
+  const supabase = await createClient();
+  const headerStore = await headers();
+  const origin =
+    headerStore.get("origin") ||
+    `${headerStore.get("x-forwarded-proto") || "http"}://${headerStore.get("host")}`;
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: getAuthCallbackUrl(origin),
+      queryParams: {
+        prompt: "select_account",
+      },
+    },
+  });
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  if (data.url) {
+    redirect(data.url);
+  }
+
+  return { error: "Google sign-in did not return a redirect URL." };
 }

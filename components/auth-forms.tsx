@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { login, signup } from "@/app/auth/actions";
+import { login, signInWithGoogle, signup } from "@/app/auth/actions";
 
 export function LoginForm() {
   const [isPending, startTransition] = useTransition();
@@ -16,10 +16,18 @@ export function LoginForm() {
     });
   }
 
+  function handleGoogleSignIn() {
+    setError(null);
+    startTransition(async () => {
+      const result = await signInWithGoogle();
+      if (result?.error) setError(result.error);
+    });
+  }
+
   return (
-    <div className="brutalist-card w-full max-w-md rotate-[1deg] bg-white p-8">
+    <div className="brutalist-card w-full max-w-md bg-white p-6 sm:rotate-[1deg] sm:p-8">
       <div className="comic-badge mb-6 bg-egg-yellow">WELCOME BACK</div>
-      <h2 className="mb-6 text-3xl font-black tracking-tighter">Enter the Bakery Board</h2>
+      <h2 className="mb-6 text-2xl font-black tracking-tighter sm:text-3xl">Enter the Bakery Board</h2>
 
       {error && (
         <div className="mb-4 border-3 border-chocolate-brown bg-tomato-red p-3 text-sm font-black text-white">
@@ -55,6 +63,24 @@ export function LoginForm() {
         </button>
       </form>
 
+      <div className="my-6 flex items-center gap-3">
+        <div className="h-0.5 flex-1 bg-chocolate-brown/20" />
+        <span className="text-[10px] font-black uppercase opacity-60">or</span>
+        <div className="h-0.5 flex-1 bg-chocolate-brown/20" />
+      </div>
+
+      <button
+        type="button"
+        disabled={isPending}
+        onClick={handleGoogleSignIn}
+        className="flex w-full items-center justify-center gap-3 rounded-brutalist border-3 border-chocolate-brown bg-white px-4 py-4 text-sm font-black uppercase shadow-brutalist-sm transition-transform active:translate-x-1 active:translate-y-1 active:shadow-none disabled:opacity-50"
+      >
+        <span className="grid size-6 place-items-center rounded-full border-2 border-chocolate-brown bg-bakery-cream text-base normal-case">
+          G
+        </span>
+        Sign in with Google
+      </button>
+
       <p className="mt-6 text-center text-sm font-bold">
         New to the investigation?{" "}
         <Link href="/signup" className="text-warm-orange underline decoration-2">
@@ -77,10 +103,18 @@ export function SignupForm() {
     });
   }
 
+  function handleGoogleSignIn() {
+    setError(null);
+    startTransition(async () => {
+      const result = await signInWithGoogle();
+      if (result?.error) setError(result.error);
+    });
+  }
+
   return (
-    <div className="brutalist-card w-full max-w-md rotate-[-1deg] bg-white p-8">
+    <div className="brutalist-card w-full max-w-md bg-white p-6 sm:rotate-[-1deg] sm:p-8">
       <div className="comic-badge mb-6 bg-warm-orange text-white">ENLIST NOW</div>
-      <h2 className="mb-6 text-3xl font-black tracking-tighter">Join the Puff Hunt</h2>
+      <h2 className="mb-6 text-2xl font-black tracking-tighter sm:text-3xl">Join the Puff Hunt</h2>
 
       {error && (
         <div className="mb-4 border-3 border-chocolate-brown bg-tomato-red p-3 text-sm font-black text-white">
@@ -126,6 +160,24 @@ export function SignupForm() {
           {isPending ? "PROCESSING..." : "REGISTER FOR DUTY"}
         </button>
       </form>
+
+      <div className="my-6 flex items-center gap-3">
+        <div className="h-0.5 flex-1 bg-chocolate-brown/20" />
+        <span className="text-[10px] font-black uppercase opacity-60">or</span>
+        <div className="h-0.5 flex-1 bg-chocolate-brown/20" />
+      </div>
+
+      <button
+        type="button"
+        disabled={isPending}
+        onClick={handleGoogleSignIn}
+        className="flex w-full items-center justify-center gap-3 rounded-brutalist border-3 border-chocolate-brown bg-white px-4 py-4 text-sm font-black uppercase shadow-brutalist-sm transition-transform active:translate-x-1 active:translate-y-1 active:shadow-none disabled:opacity-50"
+      >
+        <span className="grid size-6 place-items-center rounded-full border-2 border-chocolate-brown bg-bakery-cream text-base normal-case">
+          G
+        </span>
+        Sign up with Google
+      </button>
 
       <p className="mt-6 text-center text-sm font-bold">
         Already a detective?{" "}

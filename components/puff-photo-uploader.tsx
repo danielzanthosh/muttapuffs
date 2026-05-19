@@ -88,7 +88,7 @@ export function PuffPhotoUploader({ onUploadComplete, label = "ADD PUFF PROOF" }
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <label className="font-comic font-black text-sm uppercase tracking-tight flex items-center gap-2">
+        <label className="font-comic font-black text-xs sm:text-sm uppercase tracking-tight flex items-center gap-2">
           <Camera size={16} /> {label}
         </label>
         {selectedFile && (
@@ -106,7 +106,7 @@ export function PuffPhotoUploader({ onUploadComplete, label = "ADD PUFF PROOF" }
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          className="w-full aspect-video border-3 border-dashed border-chocolate-brown/20 rounded-brutalist bg-bakery-paper flex flex-col items-center justify-center gap-4 hover:border-warm-orange hover:bg-white transition-all group"
+          className="w-full min-h-52 sm:aspect-video border-3 border-dashed border-chocolate-brown/20 rounded-brutalist bg-bakery-paper flex flex-col items-center justify-center gap-4 hover:border-warm-orange hover:bg-white transition-all group"
         >
           <div className="w-16 h-16 bg-white border-3 border-chocolate-brown rounded-full flex items-center justify-center shadow-brutalist-sm group-hover:-rotate-6 transition-transform">
             <Camera size={32} />
@@ -126,8 +126,9 @@ export function PuffPhotoUploader({ onUploadComplete, label = "ADD PUFF PROOF" }
       ) : (
         <div 
           ref={previewRef}
-          className="relative brutalist-card bg-white p-2 overflow-hidden aspect-video flex items-center justify-center group"
+          className="relative brutalist-card bg-white p-2 overflow-hidden min-h-52 sm:aspect-video flex items-center justify-center group"
         >
+          {/* eslint-disable-next-line @next/next/no-img-element -- Blob preview URLs cannot be optimized by next/image. */}
           <img 
             src={previewUrl} 
             alt="Puff Proof Preview" 
@@ -162,9 +163,9 @@ export function PuffPhotoUploader({ onUploadComplete, label = "ADD PUFF PROOF" }
 
           {/* Compression Info Badge */}
           {selectedFile && compressedBlob && (
-            <div className="absolute bottom-4 left-4 bg-white border-2 border-chocolate-brown rounded-full px-3 py-1 flex items-center gap-2 shadow-brutalist-sm scale-90 md:scale-100">
+            <div className="absolute bottom-3 left-3 right-3 sm:right-auto bg-white border-2 border-chocolate-brown rounded-brutalist sm:rounded-full px-3 py-1 flex items-center justify-center sm:justify-start gap-2 shadow-brutalist-sm">
               <Info size={12} />
-              <span className="text-[10px] font-black uppercase whitespace-nowrap">
+              <span className="text-[9px] sm:text-[10px] font-black uppercase text-center sm:text-left">
                 OPTIMIZED: {formatFileSize(selectedFile.size)} to {formatFileSize(compressedBlob.size)}
               </span>
             </div>
