@@ -2,25 +2,10 @@
 
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
 
 export function NavbarClient({ isAdmin, isSignedIn }: { isAdmin: boolean; isSignedIn: boolean }) {
-  const navRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    gsap.from(navRef.current, {
-      y: -12,
-      opacity: 0,
-      duration: 0.22,
-      ease: "power3.out",
-    });
-  }, []);
-
   return (
-    <nav ref={navRef} className="sticky top-0 z-50 w-full px-3 py-3 pointer-events-none md:px-4 md:py-4">
+    <nav className="w-full px-3 py-3 md:px-4 md:py-4">
       <div className="mx-auto flex max-w-7xl flex-col gap-3 pointer-events-auto md:flex-row md:items-center md:justify-between">
         <div className="flex items-center justify-between">
           <Link
