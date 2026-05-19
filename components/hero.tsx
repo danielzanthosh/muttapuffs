@@ -24,7 +24,7 @@ export function Hero() {
   }, []);
 
   return (
-    <section ref={heroRef} className="relative overflow-hidden px-4 pb-20 pt-3 md:pt-4">
+    <section ref={heroRef} className="relative overflow-hidden bg-bakery-paper px-4 pb-20 pt-4 md:pt-6">
       <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-stretch">
         <div className="border-4 border-chocolate-brown bg-white p-5 shadow-brutalist-lg md:p-8" data-hero-reveal>
           <div className="mb-6 flex flex-wrap gap-3">

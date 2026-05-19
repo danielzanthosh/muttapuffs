@@ -24,7 +24,7 @@ export default async function AdminPage() {
   return (
     <>
       <Navbar />
-      <main className="flex-grow bg-bakery-paper px-4 py-16">
+      <main className="flex-grow bg-bakery-paper px-4 pb-20 pt-6 md:pt-8">
         <div className="mx-auto max-w-7xl space-y-8">
           <div>
             <div className="comic-badge mb-4 bg-tomato-red text-white">ADMIN BOARD</div>

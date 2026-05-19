@@ -48,7 +48,7 @@ export default async function ProfilePage() {
   return (
     <>
       <Navbar />
-      <main className="flex-grow bg-bakery-paper py-20 px-4">
+      <main className="flex-grow bg-bakery-paper px-4 pb-20 pt-6 md:pt-8">
         <div className="max-w-4xl mx-auto">
           <div className="brutalist-card bg-white overflow-hidden">
             {/* Header / Banner */}

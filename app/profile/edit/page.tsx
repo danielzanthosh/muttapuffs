@@ -48,7 +48,7 @@ export default async function EditProfilePage() {
   return (
     <>
       <Navbar />
-      <main className="flex-grow bg-bakery-paper py-20 px-4">
+      <main className="flex-grow bg-bakery-paper px-4 pb-20 pt-6 md:pt-8">
         <EditProfileForm profile={profile} />
       </main>
       <Footer />

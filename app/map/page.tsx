@@ -9,9 +9,9 @@ export default async function MapPage() {
   return (
     <>
       <Navbar />
-      <main className="flex-grow bg-bakery-paper px-4 py-20">
+      <main className="flex-grow bg-bakery-paper px-4 pb-20 pt-6 md:pt-8">
         <div className="mx-auto max-w-7xl">
-          <div className="mb-10 grid gap-6 border-4 border-chocolate-brown bg-white p-6 shadow-brutalist-md md:grid-cols-[1fr_320px] md:items-end">
+          <div className="mb-8 grid gap-6 border-4 border-chocolate-brown bg-white p-6 shadow-brutalist-md md:grid-cols-[1fr_320px] md:items-end">
             <div>
               <div className="comic-badge mb-4 bg-egg-yellow">BAKERY RADAR</div>
               <h1 className="max-w-4xl text-5xl font-black tracking-tighter md:text-7xl">
