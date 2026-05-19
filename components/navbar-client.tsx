@@ -23,21 +23,23 @@ export function NavbarClient({ isAdmin, isSignedIn }: { isAdmin: boolean; isSign
     <nav ref={navRef} className="sticky top-0 z-50 w-full px-3 py-3 pointer-events-none md:px-4 md:py-4">
       <div className="mx-auto flex max-w-7xl flex-col gap-3 pointer-events-auto md:flex-row md:items-center md:justify-between">
         <div className="flex items-center justify-between">
-        <Link
-          href={isSignedIn ? "/bakeries" : "/"}
-          className="bg-white border-3 border-chocolate-brown px-4 py-2 rounded-brutalist shadow-brutalist-sm rotate-[-1deg] hover:rotate-0 transition-transform"
-        >
-          <span className="font-comic font-bold text-2xl tracking-tighter">
-            Mutta<span className="text-warm-orange">Meter</span>
-          </span>
-        </Link>
-
           <Link
-            href={isSignedIn ? "/profile" : "/bakeries"}
-            className="rounded-brutalist border-3 border-chocolate-brown bg-white p-2 font-comic text-sm font-bold shadow-brutalist-sm md:hidden"
+            href={isSignedIn ? "/bakeries" : "/"}
+            className="bg-white border-3 border-chocolate-brown px-4 py-2 rounded-brutalist shadow-brutalist-sm rotate-[-1deg] hover:rotate-0 transition-transform"
           >
-            {isSignedIn ? "PROFILE" : "CASES"}
+            <span className="font-comic font-bold text-2xl tracking-tighter">
+              Mutta<span className="text-warm-orange">Meter</span>
+            </span>
           </Link>
+
+          {isSignedIn && (
+            <Link
+              href="/profile"
+              className="rounded-brutalist border-3 border-chocolate-brown bg-white p-2 font-comic text-sm font-bold shadow-brutalist-sm md:hidden"
+            >
+              PROFILE
+            </Link>
+          )}
         </div>
 
         <div className="hidden items-center gap-4 md:flex">
