@@ -32,14 +32,12 @@ export function NavbarClient({ isAdmin, isSignedIn }: { isAdmin: boolean; isSign
             </span>
           </Link>
 
-          {isSignedIn && (
-            <Link
-              href="/profile"
-              className="rounded-brutalist border-3 border-chocolate-brown bg-white p-2 font-comic text-sm font-bold shadow-brutalist-sm md:hidden"
-            >
-              PROFILE
-            </Link>
-          )}
+          <Link
+            href={isSignedIn ? "/profile" : "/login"}
+            className="rounded-brutalist border-3 border-chocolate-brown bg-white p-2 font-comic text-sm font-bold shadow-brutalist-sm md:hidden"
+          >
+            {isSignedIn ? "PROFILE" : "SIGN IN"}
+          </Link>
         </div>
 
         <div className="hidden items-center gap-4 md:flex">
