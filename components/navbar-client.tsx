@@ -20,7 +20,10 @@ export function NavbarClient({ isAdmin, isSignedIn }: { isAdmin: boolean; isSign
   }, []);
 
   return (
-    <nav ref={navRef} className="sticky top-0 z-50 w-full px-3 py-3 pointer-events-none md:px-4 md:py-4">
+    <nav
+      ref={navRef}
+      className="sticky top-0 z-50 w-full border-b-4 border-chocolate-brown bg-bakery-paper/95 px-3 py-3 backdrop-blur-sm pointer-events-none md:px-4 md:py-4"
+    >
       <div className="mx-auto flex max-w-7xl flex-col gap-3 pointer-events-auto md:flex-row md:items-center md:justify-between">
         <div className="flex items-center justify-between">
           <Link
