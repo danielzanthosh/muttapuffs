@@ -4,10 +4,21 @@ import { ReviewWithProfile } from "@/types/bakery";
 import { ScamLevelBadge } from "./ui-primitives";
 import { formatReviewDate, formatPrice, getPuffBadge, getScamAlerts } from "@/lib/puff-utils";
 import { User, Calendar, Receipt, MessageCircle, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export function ReviewCard({ review }: { review: ReviewWithProfile }) {
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && selectedPhoto) {
+        setSelectedPhoto(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [selectedPhoto]);
 
   const badge = getPuffBadge({
     egg: review.egg_rating,
@@ -96,7 +107,7 @@ export function ReviewCard({ review }: { review: ReviewWithProfile }) {
 
           {selectedPhoto && (
             <div
-              className="fixed inset-0 z-[100] bg-bakery-cream/95 backdrop-blur-sm flex items-center justify-center p-4 cursor-zoom-out"
+              className="fixed inset-0 z-[100] bg-bakery-cream/95 flex items-center justify-center p-4 cursor-zoom-out"
               onClick={() => setSelectedPhoto(null)}
             >
               <button

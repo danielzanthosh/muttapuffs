@@ -21,6 +21,17 @@ export function PuffProofGallery({ photos }: { photos: ReviewPhoto[] }) {
     }
   }, [photos]);
 
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && selectedPhoto) {
+        setSelectedPhoto(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [selectedPhoto]);
+
   if (photos.length === 0) {
     return (
       <div className="aspect-square bg-white border-2 border-chocolate-brown rounded-lg border-dashed flex items-center justify-center opacity-40">
@@ -51,8 +62,8 @@ export function PuffProofGallery({ photos }: { photos: ReviewPhoto[] }) {
       </div>
 
       {selectedPhoto && (
-        <div 
-          className="fixed inset-0 z-[100] bg-bakery-cream/95 backdrop-blur-sm flex items-center justify-center p-4 cursor-zoom-out"
+        <div
+          className="fixed inset-0 z-[100] bg-bakery-cream/95 shadow-brutalist-sm flex items-center justify-center p-4 cursor-zoom-out"
           onClick={() => setSelectedPhoto(null)}
         >
           <button
