@@ -82,7 +82,7 @@ export function Hero() {
             <div className="border-4 border-chocolate-brown bg-white p-5 shadow-brutalist-md">
               <div className="text-xs font-black uppercase opacity-60">Community Note</div>
               <p className="mt-3 font-comic text-2xl font-black leading-tight">
-                "Egg smell only" is not a review. It is evidence.
+                &quot;Egg smell only&quot; is not a review. It is evidence.
               </p>
             </div>
           </div>

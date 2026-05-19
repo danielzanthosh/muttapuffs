@@ -1,10 +1,14 @@
+"use client";
+
 import { ReviewWithProfile } from "@/types/bakery";
-import { RatingPill, ScamLevelBadge } from "./ui-primitives";
+import { ScamLevelBadge } from "./ui-primitives";
 import { formatReviewDate, formatPrice, getPuffBadge, getScamAlerts } from "@/lib/puff-utils";
-import { User, Calendar, Receipt, MessageCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { User, Calendar, Receipt, MessageCircle, X } from "lucide-react";
+import { useState } from "react";
 
 export function ReviewCard({ review }: { review: ReviewWithProfile }) {
+  const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
+
   const badge = getPuffBadge({
     egg: review.egg_rating,
     taste: review.taste_rating,
@@ -65,25 +69,52 @@ export function ReviewCard({ review }: { review: ReviewWithProfile }) {
       <div className="p-4 bg-bakery-paper border-2 border-chocolate-brown rounded-lg mb-6 relative">
         <MessageCircle size={16} className="absolute -top-2 -left-2 text-chocolate-brown fill-white" />
         <p className="text-sm font-medium leading-relaxed italic">
-          "{review.review_text}"
+          &quot;{review.review_text}&quot;
         </p>
       </div>
 
       {review.review_photos && review.review_photos.length > 0 && (
-        <div className="mb-6 grid grid-cols-1 gap-4">
-          {review.review_photos.map((photo) => (
-            <div key={photo.id} className="brutalist-card p-1 bg-white overflow-hidden aspect-video relative group/photo">
-              <img 
-                src={photo.cloudinary_url} 
-                alt="Puff Proof" 
-                className="w-full h-full object-cover rounded-lg"
-              />
-              <div className="absolute top-4 left-4 comic-badge bg-egg-yellow text-[8px] py-0.5 px-2 rotate-[-2deg] opacity-0 group-hover/photo:opacity-100 transition-opacity">
-                PHOTO EVIDENCE #ID-{photo.id.slice(0,4)}
+        <>
+          <div className="mb-6 grid grid-cols-1 gap-4">
+            {review.review_photos.map((photo) => (
+              <div
+                key={photo.id}
+                className="brutalist-card p-1 bg-white overflow-hidden aspect-video relative group/photo cursor-zoom-in"
+                onClick={() => setSelectedPhoto(photo.cloudinary_url)}
+              >
+                <img
+                  src={photo.cloudinary_url}
+                  alt="Puff Proof"
+                  className="w-full h-full object-cover rounded-lg group-hover/photo:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute top-4 left-4 comic-badge bg-egg-yellow text-[8px] py-0.5 px-2 rotate-[-2deg] opacity-100 md:opacity-0 md:group-hover/photo:opacity-100 transition-opacity">
+                  PHOTO EVIDENCE #ID-{photo.id.slice(0,4)}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {selectedPhoto && (
+            <div
+              className="fixed inset-0 z-[100] bg-bakery-cream/95 backdrop-blur-sm flex items-center justify-center p-4 cursor-zoom-out"
+              onClick={() => setSelectedPhoto(null)}
+            >
+              <button
+                className="absolute top-4 right-4 bg-white border-3 border-chocolate-brown p-2 rounded-brutalist shadow-brutalist-sm z-[101]"
+                onClick={(e) => { e.stopPropagation(); setSelectedPhoto(null); }}
+              >
+                <X size={24} />
+              </button>
+              <div className="max-w-5xl w-full max-h-[90vh] relative brutalist-card p-2 bg-white cursor-default" onClick={e => e.stopPropagation()}>
+                <img
+                  src={selectedPhoto}
+                  alt="Evidence Full View"
+                  className="w-full h-full object-contain max-h-[85vh]"
+                />
               </div>
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t-2 border-dashed border-chocolate-brown/10">

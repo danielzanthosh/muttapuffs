@@ -45,7 +45,7 @@ export function Footer() {
             Mutta<span className="text-warm-orange">Meter</span>
           </div>
           <p className="text-lg font-medium max-w-sm mb-6">
-            The world's first community-powered investigation platform 
+            The world&apos;s first community-powered investigation platform
             dedicated to the art and science of the Kerala mutta puff.
           </p>
           <div className="flex gap-4">

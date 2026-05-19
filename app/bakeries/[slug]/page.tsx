@@ -1,7 +1,7 @@
 import { getBakeryBySlug, getBakeryStats, getBakeryReviews, getBakeryPhotos } from "@/lib/supabase/queries";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
-import { RatingPill, ScamLevelBadge, BadgeChip } from "@/components/ui-primitives";
+import { ScamLevelBadge, BadgeChip } from "@/components/ui-primitives";
 import { ReviewList } from "@/components/review-list";
 import { PuffProofGallery } from "@/components/puff-proof-gallery";
 import { MapPin, Phone, MessageSquare, Camera, Plus } from "lucide-react";
@@ -9,16 +9,23 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BakeryBadge, ReviewPhoto, ReviewWithProfile } from "@/types/bakery";
 
-export default async function BakeryProfilePage({ params }: { params: { slug: string } }) {
-  const bakery = await getBakeryBySlug(params.slug);
+export default async function BakeryProfilePage(props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params;
+  let bakery = null;
+  let stats = null;
+  let reviews = [];
+  let photos = [];
 
-  if (!bakery) {
+  try {
+    bakery = await getBakeryBySlug(params.slug);
+    if (!bakery) notFound();
+    stats = await getBakeryStats(bakery.id);
+    reviews = await getBakeryReviews(bakery.id) as unknown as ReviewWithProfile[];
+    photos = (await getBakeryPhotos(bakery.id)) as ReviewPhoto[];
+  } catch(e) {
+    // Demo fallback fails here if no DB
     notFound();
   }
-
-  const stats = await getBakeryStats(bakery.id);
-  const reviews = await getBakeryReviews(bakery.id) as unknown as ReviewWithProfile[];
-  const photos = (await getBakeryPhotos(bakery.id)) as ReviewPhoto[];
 
   return (
     <>
@@ -100,7 +107,7 @@ export default async function BakeryProfilePage({ params }: { params: { slug: st
               </div>
 
               <div className="brutalist-card p-6 bg-bakery-paper">
-                <h3 className="font-black text-xl mb-2 italic">"Egg smell only."</h3>
+                <h3 className="font-black text-xl mb-2 italic">&quot;Egg smell only.&quot;</h3>
                 <p className="text-sm font-medium opacity-60">
                   - Local Legend @investigator_x
                 </p>

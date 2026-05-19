@@ -4,19 +4,24 @@ import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import Link from "next/link";
 import { BakeryFilters as BakeryFiltersType } from "@/lib/supabase/queries";
+import { BakeryWithStats } from "@/types/bakery";
 import { Suspense } from "react";
 
-export default async function BakeriesPage({
-  searchParams,
-}: {
-  searchParams: BakeryFiltersType;
+export default async function BakeriesPage(props: {
+  searchParams: Promise<BakeryFiltersType>;
 }) {
-  const bakeries = await getFilteredBakeries({
-    search: searchParams.search,
-    city: searchParams.city,
-    district: searchParams.district,
-    sort: searchParams.sort || "newest",
-  });
+  const searchParams = await props.searchParams;
+  let bakeries: BakeryWithStats[] = [];
+  try {
+    bakeries = await getFilteredBakeries({
+      search: searchParams.search,
+      city: searchParams.city,
+      district: searchParams.district,
+      sort: searchParams.sort || "newest",
+    });
+  } catch(e) {
+    bakeries = [];
+  }
 
   return (
     <>
