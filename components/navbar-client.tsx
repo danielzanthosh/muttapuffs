@@ -20,24 +20,19 @@ export function NavbarClient({ isAdmin, isSignedIn }: { isAdmin: boolean; isSign
   }, []);
 
   return (
-    <nav
-      ref={navRef}
-      className="sticky top-0 z-50 w-full bg-bakery-paper px-3 py-3 pointer-events-none md:px-4 md:py-4"
-    >
+    <nav ref={navRef} className="sticky top-0 z-50 w-full px-3 py-3 pointer-events-none md:px-4 md:py-4">
       <div className="mx-auto flex max-w-7xl flex-col gap-3 pointer-events-auto md:flex-row md:items-center md:justify-between">
         <div className="flex items-center justify-between">
           <Link
             href={isSignedIn ? "/bakeries" : "/"}
-            className="bg-white border-3 border-chocolate-brown px-4 py-2 rounded-brutalist shadow-brutalist-sm rotate-[-1deg] hover:rotate-0 transition-transform"
+            className="font-comic text-2xl font-black tracking-tighter text-chocolate-brown transition-opacity hover:opacity-80"
           >
-            <span className="font-comic font-bold text-2xl tracking-tighter">
-              Mutta<span className="text-warm-orange">Meter</span>
-            </span>
+            Mutta<span className="text-warm-orange">Meter</span>
           </Link>
 
           <Link
             href={isSignedIn ? "/profile" : "/login"}
-            className="rounded-brutalist border-3 border-chocolate-brown bg-white p-2 font-comic text-sm font-bold shadow-brutalist-sm md:hidden"
+            className="font-comic text-sm font-black uppercase tracking-tight text-chocolate-brown md:hidden"
           >
             {isSignedIn ? "PROFILE" : "SIGN IN"}
           </Link>
@@ -59,7 +54,7 @@ export function NavbarClient({ isAdmin, isSignedIn }: { isAdmin: boolean; isSign
           )}
         </div>
 
-        <div className="flex gap-2 overflow-x-auto pb-1 md:hidden">
+        <div className="flex gap-3 overflow-x-auto pb-1 md:hidden">
           <MobileNavLink href="/bakeries">Cases</MobileNavLink>
           <MobileNavLink href="/map">Map</MobileNavLink>
           <MobileNavLink href="/leaderboards">Scores</MobileNavLink>
@@ -75,7 +70,7 @@ function NavLink({ href, children, className }: { href: string; children: React.
     <Link
       href={href}
       className={cn(
-        "bg-white border-3 border-chocolate-brown px-3 py-1.5 rounded-brutalist shadow-brutalist-sm font-comic font-bold text-sm hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-brutalist-sm transition-all",
+        "font-comic text-sm font-black uppercase tracking-tight text-chocolate-brown transition-opacity hover:opacity-80",
         className
       )}
     >
@@ -88,7 +83,7 @@ function MobileNavLink({ href, children }: { href: string; children: React.React
   return (
     <Link
       href={href}
-      className="shrink-0 rounded-full border-2 border-chocolate-brown bg-white px-3 py-1.5 font-comic text-xs font-black uppercase shadow-brutalist-sm"
+      className="shrink-0 font-comic text-xs font-black uppercase tracking-tight text-chocolate-brown transition-opacity hover:opacity-80"
     >
       {children}
     </Link>
