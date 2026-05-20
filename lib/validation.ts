@@ -51,7 +51,7 @@ export const reviewSchema = z.object({
   price_rating: z.coerce.number().int().min(0).max(10),
   scam_level: z.coerce.number().int().min(0).max(10),
   price_paid: z
-    .union([z.coerce.number().min(0).max(10000), z.literal("")])
+    .union([z.literal(""), z.coerce.number().min(0).max(10000)])
     .optional()
     .transform((value) => (value === "" || value === undefined ? null : value)),
   visited_at: z
