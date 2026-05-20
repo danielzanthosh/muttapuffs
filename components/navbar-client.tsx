@@ -13,7 +13,7 @@ export function NavbarClient({ isAdmin, isSignedIn }: { isAdmin: boolean; isSign
             className="rotate-[-1deg] rounded-brutalist border-3 border-chocolate-brown bg-white px-4 py-2 shadow-brutalist-sm transition-transform hover:rotate-0"
           >
             <span className="font-comic text-2xl font-bold tracking-tighter">
-              Mutta<span className="text-warm-orange">Meter</span>
+              Mutta<span className="text-warm-orange">Puffs</span>
             </span>
           </Link>
 

@@ -1,5 +1,5 @@
 /**
- * Cloudinary & Image Processing Utilities for MuttaMeter
+ * Cloudinary & Image Processing Utilities for MuttaPuffs
  */
 
 export interface CloudinaryUploadResult {

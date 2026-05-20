@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import Link from "next/link";
+import { useSearchParams, useRouter } from "next/navigation";
 import gsap from "gsap";
 import { BakeryWithStats } from "@/types/bakery";
 import { BakeryCard } from "./bakery-card";
@@ -12,7 +13,16 @@ import { BadgeChip, ScamLevelBadge } from "./ui-primitives";
 import { AlertTriangle, ArrowLeft, CalendarCheck, FileText, MapPin, MessageCircle, Plus, ReceiptText, Tag, X } from "lucide-react";
 
 export function BakeryList({ bakeries }: { bakeries: BakeryWithStats[] }) {
-  const [selectedBakery, setSelectedBakery] = useState<BakeryWithStats | null>(null);
+  const [selectedBakeryState, setSelectedBakeryState] = useState<BakeryWithStats | null>(null);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const selectParam = searchParams.get("select");
+
+  const selectedBakery = useMemo(() => {
+    if (selectedBakeryState) return selectedBakeryState;
+    if (!selectParam) return null;
+    return bakeries.find((b) => b.slug === selectParam || b.id === selectParam) || null;
+  }, [selectedBakeryState, selectParam, bakeries]);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -30,7 +40,13 @@ export function BakeryList({ bakeries }: { bakeries: BakeryWithStats[] }) {
     if (!selectedBakery) return;
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setSelectedBakery(null);
+      if (event.key === "Escape") {
+        setSelectedBakeryState(null);
+        const params = new URLSearchParams(window.location.search);
+        params.delete("select");
+        const query = params.toString();
+        router.push(`/bakeries${query ? `?${query}` : ""}`, { scroll: false });
+      }
     };
 
     document.addEventListener("keydown", onKeyDown);
@@ -41,7 +57,7 @@ export function BakeryList({ bakeries }: { bakeries: BakeryWithStats[] }) {
       document.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = previousOverflow;
     };
-  }, [selectedBakery]);
+  }, [selectedBakery, router]);
 
   return (
     <div>
@@ -60,14 +76,31 @@ export function BakeryList({ bakeries }: { bakeries: BakeryWithStats[] }) {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
           {bakeries.map((bakery) => (
             <div key={bakery.id} className="bakery-card-anim">
-              <BakeryCard bakery={bakery} onSelect={() => setSelectedBakery(bakery)} />
+              <BakeryCard 
+                bakery={bakery} 
+                onSelect={() => {
+                  setSelectedBakeryState(bakery);
+                  const params = new URLSearchParams(window.location.search);
+                  params.set("select", bakery.slug);
+                  router.push(`/bakeries?${params.toString()}`, { scroll: false });
+                }} 
+              />
             </div>
           ))}
         </div>
       )}
 
       {selectedBakery && (
-        <BakeryDetailDialog bakery={selectedBakery} onClose={() => setSelectedBakery(null)} />
+        <BakeryDetailDialog 
+          bakery={selectedBakery} 
+          onClose={() => {
+            setSelectedBakeryState(null);
+            const params = new URLSearchParams(window.location.search);
+            params.delete("select");
+            const query = params.toString();
+            router.push(`/bakeries${query ? `?${query}` : ""}`, { scroll: false });
+          }} 
+        />
       )}
     </div>
   );

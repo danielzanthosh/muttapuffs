@@ -2,12 +2,19 @@ import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { getFilteredBakeries } from "@/lib/supabase/queries";
 import { BakeryWithStats } from "@/types/bakery";
+import Link from "next/link";
+
+export const dynamic = "force-dynamic";
 
 export default async function LeaderboardsPage() {
   const bakeries = await getFilteredBakeries({ sort: "top-rated" });
-  const topRated = [...bakeries].sort((a, b) => b.stats.avgOverall - a.stats.avgOverall).slice(0, 5);
-  const lowestScam = [...bakeries].sort((a, b) => a.stats.avgScam - b.stats.avgScam).slice(0, 5);
-  const mostReviewed = [...bakeries].sort((a, b) => b.stats.reviewCount - a.stats.reviewCount).slice(0, 5);
+  
+  // Filter out bakeries that have no investigations/reviews filed yet
+  const investigatedBakeries = bakeries.filter((b) => b.stats.reviewCount > 0);
+
+  const topRated = [...investigatedBakeries].sort((a, b) => b.stats.avgOverall - a.stats.avgOverall).slice(0, 5);
+  const lowestScam = [...investigatedBakeries].sort((a, b) => a.stats.avgScam - b.stats.avgScam).slice(0, 5);
+  const mostReviewed = [...investigatedBakeries].sort((a, b) => b.stats.reviewCount - a.stats.reviewCount).slice(0, 5);
 
   return (
     <>
@@ -23,7 +30,7 @@ export default async function LeaderboardsPage() {
 
           <div className="grid gap-8 lg:grid-cols-3">
             <Leaderboard title="Top Puff Score" label="CERTIFIED MUTTA" bakeries={topRated} metric="avgOverall" />
-            <Leaderboard title="Lowest Scam Level" label="CLEAN CASES" bakeries={lowestScam} metric="avgScam" inverse />
+            <Leaderboard title="Lowest Scam Level" label="CLEAN CASES" bakeries={lowestScam} metric="avgScam" />
             <Leaderboard title="Most Reported" label="COMMUNITY FAVORITES" bakeries={mostReviewed} metric="reviewCount" />
           </div>
         </div>
@@ -38,13 +45,11 @@ function Leaderboard({
   label,
   bakeries,
   metric,
-  inverse = false,
 }: {
   title: string;
   label: string;
   bakeries: BakeryWithStats[];
   metric: "avgOverall" | "avgScam" | "reviewCount";
-  inverse?: boolean;
 }) {
   return (
     <section className="border-4 border-chocolate-brown bg-white p-5 shadow-brutalist-md">
@@ -64,16 +69,19 @@ function Leaderboard({
             const value = bakery.stats[metric];
             return (
               <li key={bakery.id}>
-                <div className="grid grid-cols-[40px_1fr_auto] items-center gap-3 border-3 border-chocolate-brown bg-bakery-cream p-3 font-bold">
+                <Link
+                  href={`/bakeries?select=${bakery.slug}`}
+                  className="grid grid-cols-[40px_1fr_auto] items-center gap-3 border-3 border-chocolate-brown bg-bakery-cream p-3 font-bold shadow-brutalist-sm transition-all hover:bg-egg-yellow hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none"
+                >
                   <span className="text-2xl font-black tabular-nums">{index + 1}</span>
                   <span>
                     <span className="block leading-tight">{bakery.name}</span>
                     <span className="text-xs opacity-60">{bakery.city}</span>
                   </span>
                   <span className="border-2 border-chocolate-brown bg-white px-2 py-1 text-sm font-black tabular-nums">
-                    {metric === "reviewCount" ? value : inverse ? value.toFixed(1) : value.toFixed(1)}
+                    {metric === "reviewCount" ? value : value.toFixed(1)}
                   </span>
-                </div>
+                </Link>
               </li>
             );
           })}
