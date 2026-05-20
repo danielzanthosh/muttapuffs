@@ -90,7 +90,7 @@ describe("BakeryList detail modal", () => {
     fireEvent.click(screen.getByRole("button", { name: /give remarks/i }));
 
     expect(screen.getByText(/File a Field Investigation/i)).toBeTruthy();
-    expect(screen.getByRole("button", { name: /file puff report/i })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /file investigation/i })).toBeTruthy();
 
     // Go back
     fireEvent.click(screen.getByRole("button", { name: "" })); // The back button with ArrowLeft icon

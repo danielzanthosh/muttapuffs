@@ -1,9 +1,11 @@
 import { ReviewWithProfile } from "@/types/bakery";
 import { ScamLevelBadge } from "./ui-primitives";
-import { formatReviewDate, formatPrice, getPuffBadge, getScamAlerts } from "@/lib/puff-utils";
+import { formatReviewDate, formatPrice, getPuffBadge, getScamAlerts, getItemDetails } from "@/lib/puff-utils";
 import { User, Calendar, Receipt, MessageCircle } from "lucide-react";
 
 export function ReviewCard({ review }: { review: ReviewWithProfile }) {
+  const { itemName, cleanTitle, ratingLabel } = getItemDetails(review.title);
+
   const badge = getPuffBadge({
     egg: review.egg_rating,
     taste: review.taste_rating,
@@ -18,6 +20,8 @@ export function ReviewCard({ review }: { review: ReviewWithProfile }) {
     scam: review.scam_level
   });
 
+  const displayTitle = cleanTitle || itemName || "Field Report";
+
   return (
     <div className="brutalist-card bg-white p-6 relative overflow-hidden group">
       {/* Receipt Tear Effect (SVG) */}
@@ -26,13 +30,16 @@ export function ReviewCard({ review }: { review: ReviewWithProfile }) {
       <div className="flex flex-col md:flex-row justify-between items-start gap-6 mb-6">
         <div className="flex-grow">
           <div className="flex flex-wrap gap-2 mb-3">
+            <span className="comic-badge bg-bakery-cream text-chocolate-brown border-2 border-chocolate-brown text-[10px] py-0.5 px-2 font-black">
+              🔍 {itemName}
+            </span>
             <span className="comic-badge bg-warm-orange text-white text-[10px] py-0.5 px-2">{badge}</span>
             {alerts.map((alert, i) => (
               <span key={i} className="comic-badge bg-tomato-red text-white text-[10px] py-0.5 px-2 uppercase">{alert}</span>
             ))}
           </div>
           
-          <h4 className="text-xl font-black tracking-tight mb-1">{review.title || "Field Report"}</h4>
+          <h4 className="text-xl font-black tracking-tight mb-1">{displayTitle}</h4>
           
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-bold opacity-60">
             <div className="flex items-center gap-1">
@@ -75,7 +82,7 @@ export function ReviewCard({ review }: { review: ReviewWithProfile }) {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img 
                 src={photo.cloudinary_url} 
-                alt="Puff Proof" 
+                alt="Snack Proof" 
                 className="w-full h-full object-cover rounded-lg"
               />
               <div className="absolute top-4 left-4 comic-badge bg-egg-yellow text-[8px] py-0.5 px-2 rotate-[-2deg] opacity-0 group-hover/photo:opacity-100 transition-opacity">
@@ -87,7 +94,7 @@ export function ReviewCard({ review }: { review: ReviewWithProfile }) {
       )}
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t-2 border-dashed border-chocolate-brown/10">
-        <RatingMiniPill label="EGG" value={review.egg_rating} />
+        <RatingMiniPill label={ratingLabel} value={review.egg_rating} />
         <RatingMiniPill label="TASTE" value={review.taste_rating} />
         <RatingMiniPill label="FRESH" value={review.freshness_rating} />
         <RatingMiniPill label="VALUE" value={review.price_rating} />

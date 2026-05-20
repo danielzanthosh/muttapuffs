@@ -18,9 +18,9 @@ describe("buildCloudinarySignaturePayload", () => {
     expect(payload).toEqual({
       cloudName: "demo-cloud",
       apiKey: "demo-key",
-      folder: "muttameter/proof",
+      folder: "muttapuffs/proof",
       timestamp: 1_716_000_000,
-      signature: "1505a9548bd7d07a93536805705bd5cff874cc18",
+      signature: "612fc8b0ab829b8143bac635882d6fa5bc424dbe",
     });
     expect(payload).not.toHaveProperty("uploadPreset");
   });
@@ -36,8 +36,8 @@ describe("buildCloudinarySignaturePayload", () => {
       "avatar"
     );
 
-    expect(payload.folder).toBe("muttameter/avatars");
-    expect(payload.signature).toBe("3999eb8faa02382fb715fb2423435c78a9188873");
+    expect(payload.folder).toBe("muttapuffs/avatars");
+    expect(payload.signature).toBe("cbe97a0c12ebc5c4b8080a1911a130a9e55fee9a");
   });
 });
 

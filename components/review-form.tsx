@@ -19,14 +19,74 @@ export function ReviewForm({ bakeryId, onSuccess }: { bakeryId: string; bakerySl
     price: 5,
     scam: 0
   });
+  const [selectedItem, setSelectedItem] = useState("Mutta Puff");
+  const [customItem, setCustomItem] = useState("");
+
   const router = useRouter();
   const hasSupabaseEnv = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
   const supabase = hasSupabaseEnv ? createClient() : null;
 
+  const getItemConfig = (item: string) => {
+    switch (item) {
+      case "Chaaya / Tea":
+        return {
+          eggLabel: "Milk/Brew Strength",
+          eggDesc: "Is it strong, hot, and perfectly brewed?",
+          scamDesc: "Evidence of watered-down tea deception."
+        };
+      case "Kadi / Vada":
+        return {
+          eggLabel: "Dal/Crisp Density",
+          eggDesc: "Perfect crunch and savory texture?",
+          scamDesc: "Evidence of oily or hollow vada deception."
+        };
+      case "Pazhampori":
+        return {
+          eggLabel: "Pazham Sweetness",
+          eggDesc: "Is the banana perfectly ripe and sweet?",
+          scamDesc: "Evidence of thick batter with zero banana."
+        };
+      case "Samosa / Cutlet":
+        return {
+          eggLabel: "Masala/Filling Quality",
+          eggDesc: "Spicy, full of flavor, and delicious?",
+          scamDesc: "Evidence of empty pastry scam."
+        };
+      case "Sweet Bun / Cake":
+        return {
+          eggLabel: "Crumb/Softness",
+          eggDesc: "Soft, moist, and delightfully sweet?",
+          scamDesc: "Evidence of dry, stale bread scam."
+        };
+      default:
+        if (item === "Other / Add custom...") {
+          return {
+            eggLabel: "Core Ingredient Quality",
+            eggDesc: "How high-quality is the main filling/density?",
+            scamDesc: "Evidence of low-quality or scammy presentation."
+          };
+        }
+        return {
+          eggLabel: "Egg Level",
+          eggDesc: "How much egg is actually inside?",
+          scamDesc: "Evidence of empty puff deception."
+        };
+    }
+  };
+
+  const config = getItemConfig(selectedItem);
+
   async function handleSubmit(formData: FormData) {
     setError(null);
+
+    const rawTitle = (formData.get("title") as string) || "";
+    const finalItemName = selectedItem === "Other / Add custom..." ? (customItem.trim() || "Other Item") : selectedItem;
+    const prefixedTitle = rawTitle.trim()
+      ? `[${finalItemName}] ${rawTitle.trim()}`
+      : `[${finalItemName}]`;
+
     const parsed = reviewSchema.safeParse({
-      title: formData.get("title"),
+      title: prefixedTitle,
       review_text: formData.get("review_text"),
       egg_rating: ratings.egg,
       taste_rating: ratings.taste,
@@ -129,7 +189,7 @@ export function ReviewForm({ bakeryId, onSuccess }: { bakeryId: string; bakerySl
 
   return (
     <div className="brutalist-card bg-white p-5 sm:p-8 max-w-3xl w-full mx-auto">
-      <div className="comic-badge bg-egg-yellow mb-6 uppercase">NEW PUFF REPORT</div>
+      <div className="comic-badge bg-egg-yellow mb-6 uppercase">NEW SNACK REPORT</div>
       <h2 className="text-2xl sm:text-3xl font-black mb-8 tracking-tighter">File a Field Investigation</h2>
 
       {error && (
@@ -139,13 +199,57 @@ export function ReviewForm({ bakeryId, onSuccess }: { bakeryId: string; bakerySl
       )}
 
       <form action={handleSubmit} className="space-y-10">
+        {/* Bakery Item Selector */}
+        <div className="grid grid-cols-1 md:grid-cols-[2fr_3fr] gap-6 p-5 bg-bakery-cream border-3 border-chocolate-brown rounded-brutalist shadow-brutalist-sm">
+          <div className="space-y-2">
+            <label className="font-comic font-black text-sm uppercase block">
+              Item Under Investigation 🔍
+            </label>
+            <select
+              value={selectedItem}
+              onChange={(e) => setSelectedItem(e.target.value)}
+              className="w-full bg-white border-3 border-chocolate-brown p-3 rounded-brutalist font-bold focus:outline-none focus:ring-2 focus:ring-warm-orange cursor-pointer"
+            >
+              <option value="Mutta Puff">Mutta Puff (Egg Puff)</option>
+              <option value="Chaaya / Tea">Chaaya / Tea</option>
+              <option value="Kadi / Vada">Kadi / Vada</option>
+              <option value="Pazhampori">Pazhampori</option>
+              <option value="Samosa / Cutlet">Samosa / Cutlet</option>
+              <option value="Sweet Bun / Cake">Sweet Bun / Cake</option>
+              <option value="Other / Add custom...">Other / Add custom...</option>
+            </select>
+          </div>
+
+          <div className="space-y-2 flex flex-col justify-end">
+            {selectedItem === "Other / Add custom..." ? (
+              <div className="animate-in fade-in slide-in-from-top-2 duration-200">
+                <label className="font-comic font-black text-sm uppercase block mb-2">
+                  Custom Item Name 🏷️
+                </label>
+                <input
+                  type="text"
+                  value={customItem}
+                  onChange={(e) => setCustomItem(e.target.value)}
+                  placeholder="e.g. Unniyappam, Neyyappam..."
+                  className="w-full bg-white border-3 border-chocolate-brown p-3 rounded-brutalist font-bold focus:outline-none focus:ring-2 focus:ring-warm-orange"
+                  required
+                />
+              </div>
+            ) : (
+              <div className="text-sm font-bold text-chocolate-brown/85 italic bg-white/50 p-3 rounded border border-chocolate-brown/20">
+                You are investigating a Kerala bakery classic. Your ratings will dynamically adapt!
+              </div>
+            )}
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
           <RatingSlider 
-            label="Egg Level" 
+            label={config.eggLabel} 
             name="egg" 
             value={ratings.egg} 
             onChange={(val) => setRatings({...ratings, egg: val})} 
-            description="How much egg is actually inside?"
+            description={config.eggDesc}
           />
           <RatingSlider 
             label="Taste Rating" 
@@ -178,7 +282,7 @@ export function ReviewForm({ bakeryId, onSuccess }: { bakeryId: string; bakerySl
               name="scam" 
               value={ratings.scam} 
               onChange={(val) => setRatings({...ratings, scam: val})} 
-              description="Evidence of empty puff deception."
+              description={config.scamDesc}
             />
           </div>
 
@@ -202,7 +306,7 @@ export function ReviewForm({ bakeryId, onSuccess }: { bakeryId: string; bakerySl
               name="review_text"
               required
               rows={5}
-              placeholder="Describe your puff experience in detail..."
+              placeholder="Describe your bakery experience in detail..."
               className="w-full bg-bakery-cream border-3 border-chocolate-brown p-3 rounded-brutalist font-bold focus:outline-none focus:ring-2 focus:ring-warm-orange"
             />
           </div>
@@ -236,7 +340,7 @@ export function ReviewForm({ bakeryId, onSuccess }: { bakeryId: string; bakerySl
             type="submit"
             className="btn-primary min-w-0 flex-grow text-lg sm:text-2xl py-5 sm:py-6 disabled:opacity-50 shadow-brutalist-lg active:shadow-none sm:translate-x-[-4px] sm:translate-y-[-4px] active:translate-x-0 active:translate-y-0"
           >
-            {isPending ? "SUBMITTING EVIDENCE..." : "FILE PUFF REPORT"}
+            {isPending ? "SUBMITTING EVIDENCE..." : "FILE INVESTIGATION"}
           </button>
         </div>
       </form>

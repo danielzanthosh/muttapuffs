@@ -4,7 +4,8 @@ import {
   calculateOverallRating, 
   getPuffBadge, 
   getScamAlerts, 
-  formatPrice 
+  formatPrice,
+  getItemDetails
 } from '../lib/puff-utils';
 
 describe('formatReviewDate', () => {
@@ -149,4 +150,73 @@ describe('formatPrice', () => {
     expect(sanitized).toMatch(/₹\s*0/);
   });
 });
+
+describe('getItemDetails', () => {
+  it('parses correct item names and clean titles with rating labels', () => {
+    expect(getItemDetails('[Chaaya / Tea] Strong ginger tea')).toEqual({
+      itemName: 'Chaaya / Tea',
+      cleanTitle: 'Strong ginger tea',
+      ratingLabel: 'BREW',
+    });
+
+    expect(getItemDetails('[Kadi / Vada] Crunchy pariupu vada')).toEqual({
+      itemName: 'Kadi / Vada',
+      cleanTitle: 'Crunchy pariupu vada',
+      ratingLabel: 'BATTER',
+    });
+
+    expect(getItemDetails('[Pazhampori] Sweet banana fry')).toEqual({
+      itemName: 'Pazhampori',
+      cleanTitle: 'Sweet banana fry',
+      ratingLabel: 'BANANA',
+    });
+
+    expect(getItemDetails('[Samosa / Cutlet] Spicy chicken cutlet')).toEqual({
+      itemName: 'Samosa / Cutlet',
+      cleanTitle: 'Spicy chicken cutlet',
+      ratingLabel: 'FILLING',
+    });
+
+    expect(getItemDetails('[Sweet Bun / Cake] Soft cream bun')).toEqual({
+      itemName: 'Sweet Bun / Cake',
+      cleanTitle: 'Soft cream bun',
+      ratingLabel: 'CRUMB',
+    });
+
+    expect(getItemDetails('[Mutta Puff] Crispy egg puff')).toEqual({
+      itemName: 'Mutta Puff',
+      cleanTitle: 'Crispy egg puff',
+      ratingLabel: 'EGG',
+    });
+  });
+
+  it('handles empty title or legacy titles without bracket prefix', () => {
+    expect(getItemDetails('Legendary Egg Puff')).toEqual({
+      itemName: 'Mutta Puff',
+      cleanTitle: 'Legendary Egg Puff',
+      ratingLabel: 'EGG',
+    });
+
+    expect(getItemDetails('')).toEqual({
+      itemName: 'Mutta Puff',
+      cleanTitle: '',
+      ratingLabel: 'EGG',
+    });
+
+    expect(getItemDetails(null)).toEqual({
+      itemName: 'Mutta Puff',
+      cleanTitle: '',
+      ratingLabel: 'EGG',
+    });
+  });
+
+  it('handles custom/unmapped items with CORE label', () => {
+    expect(getItemDetails('[Unniyappam] Hot unniyappam')).toEqual({
+      itemName: 'Unniyappam',
+      cleanTitle: 'Hot unniyappam',
+      ratingLabel: 'CORE',
+    });
+  });
+});
+
 

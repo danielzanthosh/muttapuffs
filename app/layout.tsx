@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "MuttaMeter | Find Legendary Puffs",
+  title: "MuttaPuffs | Find Legendary Puffs",
   description: "Community-powered bakery discovery platform focused on Kerala bakery culture and mutta puffs.",
 };
 

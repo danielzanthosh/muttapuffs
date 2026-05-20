@@ -42,7 +42,7 @@ export function Footer() {
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
         <div className="col-span-1 md:col-span-2">
           <div className="font-comic font-black text-3xl mb-6">
-            Mutta<span className="text-warm-orange">Meter</span>
+            Mutta<span className="text-warm-orange">Puffs</span>
           </div>
           <p className="text-lg font-medium max-w-sm mb-6">
             The world&apos;s first community-powered investigation platform 
@@ -77,7 +77,7 @@ export function Footer() {
       </div>
       
       <div className="max-w-7xl mx-auto border-t-2 border-chocolate-brown/10 pt-8 text-center font-bold text-sm opacity-60">
-        (C) 2026 MUTTAMETER. BUILT WITH MASALA AND LOVE IN KERALA.
+        (C) 2026 MUTTAPUFFS. BUILT WITH MASALA AND LOVE IN KERALA.
       </div>
     </footer>
   );

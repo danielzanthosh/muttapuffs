@@ -59,3 +59,48 @@ export function formatPrice(amount: number) {
     maximumFractionDigits: 0
   }).format(amount);
 }
+
+export function getItemDetails(rawTitle: string | null): {
+  itemName: string;
+  cleanTitle: string;
+  ratingLabel: string;
+} {
+  if (!rawTitle) {
+    return {
+      itemName: "Mutta Puff",
+      cleanTitle: "",
+      ratingLabel: "EGG"
+    };
+  }
+
+  const match = rawTitle.match(/^\[([^\]]+)\]\s*(.*)$/);
+  if (match) {
+    const itemName = match[1].trim();
+    const cleanTitle = match[2].trim() || itemName;
+    
+    // Map dynamic rating pill labels
+    let ratingLabel = "CORE";
+    const lowerItem = itemName.toLowerCase();
+    if (lowerItem.includes("tea") || lowerItem.includes("chaaya") || lowerItem === "tea") {
+      ratingLabel = "BREW";
+    } else if (lowerItem.includes("vada") || lowerItem.includes("kadi")) {
+      ratingLabel = "BATTER";
+    } else if (lowerItem.includes("pazham") || lowerItem.includes("banana")) {
+      ratingLabel = "BANANA";
+    } else if (lowerItem.includes("samosa") || lowerItem.includes("cutlet") || lowerItem.includes("filling")) {
+      ratingLabel = "FILLING";
+    } else if (lowerItem.includes("bun") || lowerItem.includes("cake") || lowerItem.includes("bread")) {
+      ratingLabel = "CRUMB";
+    } else if (lowerItem.includes("puff") || lowerItem.includes("mutta")) {
+      ratingLabel = "EGG";
+    }
+
+    return { itemName, cleanTitle, ratingLabel };
+  }
+
+  return {
+    itemName: "Mutta Puff",
+    cleanTitle: rawTitle,
+    ratingLabel: "EGG"
+  };
+}

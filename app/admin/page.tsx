@@ -28,7 +28,7 @@ export default async function AdminPage() {
         <div className="mx-auto max-w-7xl space-y-8">
           <div>
             <div className="comic-badge mb-4 bg-tomato-red text-white">ADMIN BOARD</div>
-            <h1 className="text-4xl font-black tracking-tighter md:text-6xl">Manage MuttaMeter</h1>
+            <h1 className="text-4xl font-black tracking-tighter md:text-6xl">Manage MuttaPuffs</h1>
           </div>
 
           <div className="grid gap-4 md:grid-cols-4">

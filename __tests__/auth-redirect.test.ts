@@ -3,8 +3,8 @@ import { getAuthCallbackUrl, getSafeAuthNextPath } from "../lib/auth-redirect";
 
 describe("getAuthCallbackUrl", () => {
   it("builds a Supabase OAuth callback URL from the current origin", () => {
-    expect(getAuthCallbackUrl("https://muttameter.vercel.app/login")).toBe(
-      "https://muttameter.vercel.app/auth/callback"
+    expect(getAuthCallbackUrl("https://muttapuffs.vercel.app/login")).toBe(
+      "https://muttapuffs.vercel.app/auth/callback"
     );
   });
 

@@ -50,7 +50,7 @@ export function BakeryList({ bakeries }: { bakeries: BakeryWithStats[] }) {
       {bakeries.length === 0 ? (
         <div className="brutalist-card p-10 md:p-20 bg-white text-center">
           <div className="mx-auto mb-6 h-16 w-16 rotate-[-4deg] border-4 border-dashed border-chocolate-brown bg-egg-yellow shadow-brutalist-md" />
-          <h3 className="text-3xl font-black mb-2">Zero Mutta Detected.</h3>
+          <h3 className="text-3xl font-black mb-2">Zero Bakeries Found.</h3>
           <p className="font-bold opacity-60">Try adjusting your filters or register a new bakery.</p>
           <Link href="/bakeries/new" className="btn-primary mt-6 inline-block">
             Register Bakery
@@ -183,8 +183,8 @@ function BakeryDetailDialog({ bakery, onClose }: { bakery: BakeryWithStats; onCl
               <aside className="space-y-10">
                 <div className="border-4 border-chocolate-brown bg-egg-yellow p-10 shadow-brutalist">
                   <div className="mb-8 font-comic text-sm font-black uppercase tracking-widest border-b-2 border-chocolate-brown pb-2">Live Receipt</div>
-                  <ScoreRow label="Puff score" value={`${bakery.stats.avgOverall.toFixed(1)}/10`} />
-                  <ScoreRow label="Mutta score" value={`${bakery.stats.avgEgg.toFixed(1)}/10`} />
+                  <ScoreRow label="Overall score" value={`${bakery.stats.avgOverall.toFixed(1)}/10`} />
+                  <ScoreRow label="Filling score" value={`${bakery.stats.avgEgg.toFixed(1)}/10`} />
                   <ScoreRow label="Taste" value={`${(bakery.stats.avgTaste ?? bakery.stats.avgOverall).toFixed(1)}/10`} />
                   <ScoreRow label="Freshness" value={`${(bakery.stats.avgFreshness ?? bakery.stats.avgOverall).toFixed(1)}/10`} />
                   <ScoreRow label="Price" value={`${(bakery.stats.avgPrice ?? bakery.stats.avgOverall).toFixed(1)}/10`} />
@@ -199,11 +199,11 @@ function BakeryDetailDialog({ bakery, onClose }: { bakery: BakeryWithStats; onCl
                   </div>
                   <div className="grid grid-cols-2 gap-6">
                     <div className="flex flex-col items-center border-4 border-chocolate-brown p-6 bg-bakery-paper shadow-brutalist-sm">
-                      <span className="text-[12px] font-black uppercase mb-2">PUFF</span>
+                      <span className="text-[12px] font-black uppercase mb-2">OVERALL</span>
                       <span className="text-5xl font-black">{bakery.stats.avgOverall.toFixed(1)}</span>
                     </div>
                     <div className="flex flex-col items-center border-4 border-chocolate-brown p-6 bg-egg-yellow shadow-brutalist-sm">
-                      <span className="text-[12px] font-black uppercase mb-2">MUTTA</span>
+                      <span className="text-[12px] font-black uppercase mb-2">FILL</span>
                       <span className="text-5xl font-black">{bakery.stats.avgEgg.toFixed(1)}</span>
                     </div>
                   </div>

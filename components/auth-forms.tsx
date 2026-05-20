@@ -43,7 +43,7 @@ export function LoginForm() {
             name="email"
             type="email"
             required
-            placeholder="detective@muttameter.com"
+            placeholder="detective@muttapuffs.com"
             className="w-full rounded-brutalist border-3 border-chocolate-brown bg-bakery-cream p-3 font-bold focus:outline-none focus:ring-2 focus:ring-warm-orange"
           />
         </div>
@@ -141,7 +141,7 @@ export function SignupForm() {
             name="email"
             type="email"
             required
-            placeholder="detective@muttameter.com"
+            placeholder="detective@muttapuffs.com"
             className="w-full rounded-brutalist border-3 border-chocolate-brown bg-bakery-cream p-3 font-bold focus:outline-none focus:ring-2 focus:ring-egg-yellow"
           />
         </div>

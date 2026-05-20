@@ -1,8 +1,8 @@
 import { createHash } from "crypto";
 
 const CLOUDINARY_FOLDERS = {
-  avatar: "muttameter/avatars",
-  proof: "muttameter/proof",
+  avatar: "muttapuffs/avatars",
+  proof: "muttapuffs/proof",
 } as const;
 
 export type CloudinaryUploadKind = keyof typeof CLOUDINARY_FOLDERS;

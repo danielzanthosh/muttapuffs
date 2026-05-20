@@ -29,7 +29,7 @@ export function BakeryCard({ bakery, onSelect }: { bakery: BakeryWithStats; onSe
         </div>
         
         <div className="flex flex-col items-end gap-2">
-          <RatingPill value={bakery.stats.avgOverall} label="PUFF" />
+          <RatingPill value={bakery.stats.avgOverall} label="OVERALL" />
           <ScamLevelBadge level={bakery.stats.avgScam} />
         </div>
       </div>
@@ -44,7 +44,7 @@ export function BakeryCard({ bakery, onSelect }: { bakery: BakeryWithStats; onSe
           {bakery.stats.reviewCount} REPORTS
         </div>
         
-        <RatingPill value={bakery.stats.avgEgg} label="MUTTA" />
+        <RatingPill value={bakery.stats.avgEgg} label="FILL" />
       </div>
     </button>
   );
