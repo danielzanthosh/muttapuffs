@@ -9,13 +9,14 @@ import { Suspense } from "react";
 export default async function BakeriesPage({
   searchParams,
 }: {
-  searchParams: BakeryFiltersType;
+  searchParams: Promise<BakeryFiltersType>;
 }) {
+  const resolvedSearchParams = await searchParams;
   const bakeries = await getFilteredBakeries({
-    search: searchParams.search,
-    city: searchParams.city,
-    district: searchParams.district,
-    sort: searchParams.sort || "newest",
+    search: resolvedSearchParams.search,
+    city: resolvedSearchParams.city,
+    district: resolvedSearchParams.district,
+    sort: resolvedSearchParams.sort || "newest",
   });
 
   return (
