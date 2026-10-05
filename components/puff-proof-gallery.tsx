@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import type { ReviewPhoto } from "@/types/bakery";
+import Image from "next/image";
 
 export function PuffProofGallery({ photos }: { photos: ReviewPhoto[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -34,13 +35,14 @@ export function PuffProofGallery({ photos }: { photos: ReviewPhoto[] }) {
           key={photo.id} 
           className="gallery-item brutalist-card p-1 bg-white overflow-hidden aspect-square relative group cursor-zoom-in"
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img 
+          <Image
             src={photo.cloudinary_url} 
             alt="Puff Proof" 
-            className="w-full h-full object-cover rounded-lg group-hover:scale-110 transition-transform duration-500"
+            fill
+            sizes="(max-width: 768px) 50vw, 25vw"
+            className="object-cover rounded-lg group-hover:scale-110 transition-transform duration-500"
           />
-          <div className="absolute inset-0 bg-chocolate-brown/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+          <div className="absolute inset-0 bg-chocolate-brown/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
             <span className="text-white font-black text-[10px] uppercase tracking-tighter">VIEW EVIDENCE</span>
           </div>
         </div>

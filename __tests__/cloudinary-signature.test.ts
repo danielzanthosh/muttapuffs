@@ -43,7 +43,7 @@ describe("buildCloudinarySignaturePayload", () => {
 
 describe("getCloudinaryServerConfig", () => {
   it("reports all missing Cloudinary server env vars", () => {
-    const config = getCloudinaryServerConfig({});
+    const config = getCloudinaryServerConfig({} as NodeJS.ProcessEnv);
 
     expect(config).toEqual({
       ok: false,
