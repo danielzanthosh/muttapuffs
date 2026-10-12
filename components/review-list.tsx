@@ -1,4 +1,5 @@
 import { ReviewWithProfile } from "@/types/bakery";
+import Image from "next/image";
 import { ScamLevelBadge } from "./ui-primitives";
 import { formatReviewDate, formatPrice, getPuffBadge, getScamAlerts, getItemDetails } from "@/lib/puff-utils";
 import { User, Calendar, Receipt, MessageCircle } from "lucide-react";
@@ -79,10 +80,11 @@ export function ReviewCard({ review }: { review: ReviewWithProfile }) {
         <div className="mb-6 grid grid-cols-1 gap-4">
           {review.review_photos.map((photo) => (
             <div key={photo.id} className="brutalist-card p-1 bg-white overflow-hidden aspect-video relative group/photo">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img 
+              <Image
                 src={photo.cloudinary_url} 
                 alt="Snack Proof" 
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="w-full h-full object-cover rounded-lg"
               />
               <div className="absolute top-4 left-4 comic-badge bg-egg-yellow text-[8px] py-0.5 px-2 rotate-[-2deg] opacity-0 group-hover/photo:opacity-100 transition-opacity">

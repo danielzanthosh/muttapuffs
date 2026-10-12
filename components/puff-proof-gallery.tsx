@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Image from "next/image";
 import gsap from "gsap";
 import type { ReviewPhoto } from "@/types/bakery";
 
@@ -34,10 +35,11 @@ export function PuffProofGallery({ photos }: { photos: ReviewPhoto[] }) {
           key={photo.id} 
           className="gallery-item brutalist-card p-1 bg-white overflow-hidden aspect-square relative group cursor-zoom-in"
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img 
+          <Image
             src={photo.cloudinary_url} 
             alt="Puff Proof" 
+            fill
+            sizes="(max-width: 768px) 50vw, 33vw"
             className="w-full h-full object-cover rounded-lg group-hover:scale-110 transition-transform duration-500"
           />
           <div className="absolute inset-0 bg-chocolate-brown/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
